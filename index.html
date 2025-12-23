@@ -1168,7 +1168,8 @@ canvas, .canvasWrap, .gameWrap {
 
     async function ensureLoggedIn() {
       if (!sb) {
-        // Missing script or bad load; allow playing offline but hide online features
+        // Missing script or bad load; allow playing offline
+        showScreen("home");
         return;
       }
       const { data } = await sb.auth.getSession();
