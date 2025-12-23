@@ -2,7 +2,7 @@
 <html lang="nl">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Arcade Hub</title>
   <style>
     :root{
@@ -591,9 +591,74 @@
       user-select:none;
     }
     .chip:hover{ border-color: rgba(160,180,255,.22); filter: brightness(1.06); }
-  </style>
+  /* =========================
+   Mobile friendly upgrades
+   ========================= */
+* { -webkit-tap-highlight-color: transparent; }
+
+input, textarea, select, button {
+  font-size: 16px; /* prevents iOS zoom on focus */
+}
+
+.btn, .hudBtn, .chip, .tabBtn {
+  min-height: 44px;
+}
+
+.topbar {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.stage {
+  padding: 14px;
+}
+
+.card {
+  padding: 14px;
+}
+
+.row2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 900px) {
+  .row2 { grid-template-columns: 1fr; }
+}
+
+/* Make game canvases and panels fit small screens */
+canvas, .canvasWrap, .gameWrap {
+  max-width: 100%;
+}
+
+@media (max-width: 600px) {
+  body { padding: 12px; }
+  .topbar { flex-direction: column; align-items: stretch; }
+  .topbar .left, .topbar .right { width: 100%; justify-content: space-between; }
+  .topbar .right { flex-wrap: wrap; }
+  .card { border-radius: 14px; }
+  .btnrow { flex-wrap: wrap; }
+  .btn, .hudBtn { width: 100%; }
+  .chip { width: auto; }
+  .kv { grid-template-columns: 1fr; }
+  .tabs { flex-wrap: wrap; }
+  .tabBtn { flex: 1 1 140px; }
+  .chatBox { height: min(52vh, 420px); }
+  .chatInput { width: 100%; }
+}
+
+/* Respect safe areas (iPhone notch) */
+.safe {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+</style>
 </head>
-<body>
+<body class="safe">
   <div class="bg"></div>
   <div class="noise"></div>
 
@@ -608,6 +673,7 @@
       </div>
 
       <div style="display:flex; gap:10px; align-items:center;">
+        <button class="btn ghost" id="btnFriendsTop" style="padding:8px 12px; border-radius:999px;">Friends</button>
         <button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;">Hulp</button>
         <div class="pill">
           <span class="dot" aria-hidden="true"></span>
@@ -938,6 +1004,83 @@
           </div>
 
         </div>
+      <!-- AUTH -->
+      <section class="screen" id="screenAuth">
+        <div class="card" style="width:min(520px,96vw);">
+          <h1>Inloggen</h1>
+          <p>Log in met e-mail en wachtwoord. Nieuwe? Maak een account en kies een gebruikersnaam.</p>
+
+          <div class="panel" style="margin-top:12px;">
+            <h2>Login</h2>
+            <div style="display:grid; gap:10px; margin-top:8px;">
+              <input class="chatInput" id="loginEmail" placeholder="E-mail" />
+              <input class="chatInput" id="loginPass" type="password" placeholder="Wachtwoord" />
+              <button class="btn primary" id="btnLogin">Login</button>
+              <div id="loginMsg" style="color:rgba(219,230,255,.75); font-size:13px;"></div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:12px;">
+            <h2>Account maken</h2>
+            <div style="display:grid; gap:10px; margin-top:8px;">
+              <input class="chatInput" id="signupUser" placeholder="Gebruikersnaam" />
+              <input class="chatInput" id="signupEmail" placeholder="E-mail" />
+              <input class="chatInput" id="signupPass" type="password" placeholder="Wachtwoord (min. 6 tekens)" />
+              <button class="btn" id="btnSignup">Maak account</button>
+              <div id="signupMsg" style="color:rgba(219,230,255,.75); font-size:13px;"></div>
+            </div>
+            <p class="hint" style="margin-top:10px;">
+              Tip: kopieer je publishable key volledig uit Supabase (die is lang). Anders werkt login niet.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FRIENDS -->
+      <section class="screen" id="screenFriends">
+        <div class="card">
+          <h1>Friends</h1>
+          <p>Voeg vrienden toe met hun gebruikersnaam. (Voor online spelen gaan we straks rooms koppelen.)</p>
+
+          <div class="row2">
+            <div class="panel">
+              <h2>Vriend toevoegen</h2>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+                <input class="chatInput" id="friendUsername" placeholder="Gebruikersnaam" style="flex:1; min-width: 220px;" />
+                <button class="btn primary" id="btnAddFriend">Toevoegen</button>
+              </div>
+              <div id="friendAddMsg" style="margin-top:10px; color:rgba(219,230,255,.75); font-size:13px;"></div>
+            </div>
+
+            <div class="panel">
+              <h2>Jij</h2>
+              <div class="kv" style="margin-top:8px;">
+                <div>Gebruiker</div><div><b id="meUserLabel">—</b></div>
+                <div>E-mail</div><div><b id="meEmailLabel">—</b></div>
+              </div>
+              <div class="btnrow" style="margin-top:12px;">
+                <button class="btn ghost" id="btnFriendsBack">Terug</button>
+                <button class="btn" id="btnLogout">Logout</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:12px;">
+            <h2>Requests</h2>
+            <div id="requestsList" style="display:grid; gap:10px; margin-top:10px;"></div>
+          </div>
+
+          <div class="panel" style="margin-top:12px;">
+            <h2>Vrienden</h2>
+            <div id="friendsList" style="display:grid; gap:10px; margin-top:10px;"></div>
+          </div>
+
+          <p class="hint" style="margin-top:12px;">
+            Als je hier errors ziet, moeten we straks in Supabase tabellen + policies aanzetten.
+          </p>
+        </div>
+      </section>
+
       </section>
 
     </div>
@@ -947,12 +1090,304 @@
       <div>Tip: <span class="kbd">P</span> pause (Game 1)</div>
     </div>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
   <script>
     // -------------------------------
     // Router
     // -------------------------------
     const $ = (id) => document.getElementById(id);
+
+    // =====================================================================
+    // Supabase (Auth + Friends) — basic (GitHub Pages compatible)
+    // =====================================================================
+    const SUPABASE_URL = "https://sqrabbnzyvdhaffykchs.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_sKoFZmP00eQbJ7WQ91kD6w_KQlMqKP_";
+
+    const sb = (window.supabase && window.supabase.createClient)
+      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
+
+    const authUi = {
+      loginEmail: $("loginEmail"),
+      loginPass: $("loginPass"),
+      signupUser: $("signupUser"),
+      signupEmail: $("signupEmail"),
+      signupPass: $("signupPass"),
+      btnLogin: $("btnLogin"),
+      btnSignup: $("btnSignup"),
+      loginMsg: $("loginMsg"),
+      signupMsg: $("signupMsg"),
+      btnLogout: $("btnLogout"),
+      btnFriendsTop: $("btnFriendsTop"),
+      btnFriendsBack: $("btnFriendsBack"),
+      meUserLabel: $("meUserLabel"),
+      meEmailLabel: $("meEmailLabel"),
+      friendUsername: $("friendUsername"),
+      btnAddFriend: $("btnAddFriend"),
+      friendAddMsg: $("friendAddMsg"),
+      requestsList: $("requestsList"),
+      friendsList: $("friendsList"),
+    };
+
+    let sessionUser = null;
+    let myProfile = null;
+
+    function setMsg(el, text) {
+      if (!el) return;
+      el.textContent = text || "";
+    }
+
+    async function loadMyProfile() {
+      if (!sb || !sessionUser) return null;
+      const { data, error } = await sb
+        .from("profiles")
+        .select("id, username, created_at")
+        .eq("id", sessionUser.id)
+        .maybeSingle();
+      if (error) throw error;
+      myProfile = data || null;
+      return myProfile;
+    }
+
+    async function upsertMyProfile(username) {
+      if (!sb || !sessionUser) throw new Error("Geen sessie");
+      const clean = String(username || "").trim();
+      if (clean.length < 3) throw new Error("Gebruikersnaam te kort (min 3)");
+      const { error } = await sb
+        .from("profiles")
+        .upsert({ id: sessionUser.id, username: clean }, { onConflict: "id" });
+      if (error) throw error;
+      await loadMyProfile();
+    }
+
+    function updateMeLabels() {
+      if (authUi.meEmailLabel) authUi.meEmailLabel.textContent = sessionUser?.email || "—";
+      if (authUi.meUserLabel) authUi.meUserLabel.textContent = myProfile?.username || "—";
+    }
+
+    async function ensureLoggedIn() {
+      if (!sb) {
+        // Missing script or bad load; allow playing offline but hide online features
+        return;
+      }
+      const { data } = await sb.auth.getSession();
+      sessionUser = data?.session?.user || null;
+
+      if (!sessionUser) {
+        showScreen("auth");
+        return;
+      }
+
+      await loadMyProfile().catch(()=>null);
+      updateMeLabels();
+    }
+
+    async function doLogin() {
+      setMsg(authUi.loginMsg, "Bezig met inloggen…");
+      try {
+        const email = authUi.loginEmail.value.trim();
+        const password = authUi.loginPass.value;
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+        sessionUser = data.user;
+        await loadMyProfile().catch(()=>null);
+        updateMeLabels();
+        setMsg(authUi.loginMsg, "✅ Ingelogd!");
+        showScreen("home");
+      } catch (e) {
+        setMsg(authUi.loginMsg, "⚠️ " + (e?.message || e));
+      }
+    }
+
+    async function doSignup() {
+      setMsg(authUi.signupMsg, "Account maken…");
+      try {
+        const username = authUi.signupUser.value.trim();
+        const email = authUi.signupEmail.value.trim();
+        const password = authUi.signupPass.value;
+        const { data, error } = await sb.auth.signUp({ email, password });
+        if (error) throw error;
+
+        sessionUser = data.user || null;
+
+        if (sessionUser) {
+          await upsertMyProfile(username);
+          updateMeLabels();
+          showScreen("home");
+          setMsg(authUi.signupMsg, "✅ Account klaar!");
+        } else {
+          setMsg(authUi.signupMsg, "✅ Account gemaakt. Check je mail als e-mail bevestiging aan staat.");
+        }
+      } catch (e) {
+        setMsg(authUi.signupMsg, "⚠️ " + (e?.message || e));
+      }
+    }
+
+    async function doLogout() {
+      try { await sb.auth.signOut(); } catch {}
+      sessionUser = null;
+      myProfile = null;
+      updateMeLabels();
+      showScreen("auth");
+    }
+
+    async function openFriends() {
+      if (!sessionUser) return showScreen("auth");
+      await refreshFriends().catch(()=>null);
+      showScreen("friends");
+    }
+
+    async function refreshFriends() {
+      if (!sb || !sessionUser) return;
+      if (authUi.requestsList) authUi.requestsList.innerHTML = "";
+      if (authUi.friendsList) authUi.friendsList.innerHTML = "";
+
+      // Requests to me
+      const { data: reqs, error: reqErr } = await sb
+        .from("friend_requests")
+        .select("id, from_id, to_id, status, created_at, from:from_id(username)")
+        .eq("to_id", sessionUser.id)
+        .eq("status", "pending")
+        .order("created_at", { ascending: false });
+
+      if (reqErr) {
+        if (authUi.requestsList) authUi.requestsList.innerHTML = `<div class="hint">⚠️ ${reqErr.message}</div>`;
+      } else {
+        if (authUi.requestsList && (!reqs || reqs.length===0)) authUi.requestsList.innerHTML = `<div class="hint">Geen requests.</div>`;
+        for (const r of (reqs||[])) {
+          const row = document.createElement("div");
+          row.className = "panel";
+          row.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+              <div><b>${r.from?.username || r.from_id}</b> wil vriend worden.</div>
+              <div style="display:flex; gap:8px;">
+                <button class="hudBtn" data-act="accept" data-id="${r.id}">Accepteer</button>
+                <button class="hudBtn" data-act="decline" data-id="${r.id}">Weiger</button>
+              </div>
+            </div>`;
+          authUi.requestsList.appendChild(row);
+        }
+      }
+
+      // Friends list
+      const { data: friends, error: frErr } = await sb
+        .from("friends")
+        .select("id, user_id, friend_id, created_at, friend:friend_id(username)")
+        .eq("user_id", sessionUser.id)
+        .order("created_at", { ascending: false });
+
+      if (frErr) {
+        if (authUi.friendsList) authUi.friendsList.innerHTML = `<div class="hint">⚠️ ${frErr.message}</div>`;
+      } else {
+        if (authUi.friendsList && (!friends || friends.length===0)) authUi.friendsList.innerHTML = `<div class="hint">Nog geen vrienden.</div>`;
+        for (const f of (friends||[])) {
+          const row = document.createElement("div");
+          row.className = "panel";
+          row.innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+              <div>👤 <b>${f.friend?.username || f.friend_id}</b></div>
+              <div style="display:flex; gap:8px;">
+                <button class="hudBtn" data-act="invite" data-uid="${f.friend_id}">Invite</button>
+              </div>
+            </div>`;
+          authUi.friendsList.appendChild(row);
+        }
+      }
+    }
+
+    async function addFriendByUsername() {
+      setMsg(authUi.friendAddMsg, "Zoeken…");
+      try {
+        const uname = authUi.friendUsername.value.trim();
+        if (uname.length < 3) throw new Error("Gebruikersnaam te kort");
+        if (!sb || !sessionUser) throw new Error("Niet ingelogd");
+
+        const { data: prof, error: pErr } = await sb
+          .from("profiles")
+          .select("id, username")
+          .eq("username", uname)
+          .maybeSingle();
+        if (pErr) throw pErr;
+        if (!prof) throw new Error("Gebruiker niet gevonden");
+        if (prof.id === sessionUser.id) throw new Error("Dat ben jij 😄");
+
+        const { error } = await sb
+          .from("friend_requests")
+          .insert({ from_id: sessionUser.id, to_id: prof.id, status: "pending" });
+        if (error) throw error;
+
+        setMsg(authUi.friendAddMsg, "✅ Request verstuurd!");
+        authUi.friendUsername.value = "";
+        await refreshFriends().catch(()=>null);
+      } catch (e) {
+        setMsg(authUi.friendAddMsg, "⚠️ " + (e?.message || e));
+      }
+    }
+
+    async function handleRequestsClick(e) {
+      const btn = e.target.closest("button[data-act]");
+      if (!btn) return;
+      const act = btn.getAttribute("data-act");
+      const id = btn.getAttribute("data-id");
+      if (!id) return;
+
+      try {
+        if (act === "accept") {
+          const { data: req, error: rErr } = await sb
+            .from("friend_requests")
+            .select("id, from_id, to_id, status")
+            .eq("id", id)
+            .maybeSingle();
+          if (rErr) throw rErr;
+          if (!req) throw new Error("Request niet gevonden");
+
+          const { error: uErr } = await sb
+            .from("friend_requests")
+            .update({ status: "accepted" })
+            .eq("id", id);
+          if (uErr) throw uErr;
+
+          const { error: fErr } = await sb.from("friends").insert([
+            { user_id: req.to_id, friend_id: req.from_id },
+            { user_id: req.from_id, friend_id: req.to_id },
+          ]);
+          if (fErr) throw fErr;
+        } else if (act === "decline") {
+          const { error } = await sb
+            .from("friend_requests")
+            .update({ status: "declined" })
+            .eq("id", id);
+          if (error) throw error;
+        }
+        await refreshFriends();
+      } catch (e2) {
+        alert("Fout: " + (e2?.message || e2));
+      }
+    }
+
+    // Hook up events
+    if (authUi.btnLogin) authUi.btnLogin.onclick = doLogin;
+    if (authUi.btnSignup) authUi.btnSignup.onclick = doSignup;
+    if (authUi.btnLogout) authUi.btnLogout.onclick = doLogout;
+    if (authUi.btnFriendsTop) authUi.btnFriendsTop.onclick = openFriends;
+    if (authUi.btnFriendsBack) authUi.btnFriendsBack.onclick = () => showScreen(lastNonHelpScreen || "home");
+    if (authUi.btnAddFriend) authUi.btnAddFriend.onclick = addFriendByUsername;
+    if (authUi.requestsList) authUi.requestsList.addEventListener("click", handleRequestsClick);
+
+    if (sb) {
+      sb.auth.onAuthStateChange(async (_event, sess) => {
+        sessionUser = sess?.user || null;
+        if (!sessionUser) {
+          myProfile = null;
+          updateMeLabels();
+          showScreen("auth");
+          return;
+        }
+        await loadMyProfile().catch(()=>null);
+        updateMeLabels();
+      });
+    }
 
     const screens = {
       home: $("screenHome"),
@@ -962,6 +1397,9 @@
       game1: $("screenGame1"),
       game2: $("screenGame2"),
       game3: $("screenGame3"),
+   
+      auth: $("screenAuth"),
+      friends: $("screenFriends"),
     };
 
     const statusText = $("statusText");
@@ -978,12 +1416,15 @@
         name === "how" ? "Uitleg" :
         name === "select" ? "Game select" :
         name === "help" ? "Arcade AI" :
+        name === "auth" ? "Login" :
+        name === "friends" ? "Friends" :
         name === "game1" ? "Playing: Neon Dodger" :
         name === "game2" ? "Playing: TicTacToe" :
         name === "game3" ? "Playing: Dammen" : "—";
     }
 
     function openHelp(prefill){
+      if (typeof sessionUser !== "undefined" && !sessionUser) { showScreen("auth"); return; }
       showScreen("help");
       if (prefill) {
         aiSendUser(prefill);
@@ -992,7 +1433,7 @@
       }
     }
 
-    $("btnPlay").onclick = () => showScreen("select");
+    $("btnPlay").onclick = () => { if (typeof sessionUser !== "undefined" && !sessionUser) return showScreen("auth"); showScreen("select"); };
     $("btnHow").onclick = () => showScreen("how");
     $("btnHowContinue").onclick = () => showScreen("select");
     $("btnHowBack").onclick = () => showScreen("home");
@@ -1156,6 +1597,9 @@
 
     // greeting
     aiPush("assistant", "Hey! Ik ben Arcade AI 👾\nVraag me alles over de games, regels, strategie, of bugs.");
+
+    // Supabase auth gate
+    ensureLoggedIn();
 
     // =====================================================================
     // Game 1: Neon Dodger
@@ -2361,9 +2805,9 @@
     // =====================================================================
     // Button wiring (start games)
     // =====================================================================
-    $("btnStartGame1").onclick = () => g1Start();
-    $("btnStartGame2").onclick = () => tttStart();
-    $("btnStartGame3").onclick = () => chkStart();
+    $("btnStartGame1").onclick = () => { if (typeof sessionUser !== "undefined" && !sessionUser) return showScreen("auth"); g1Start(); };
+    $("btnStartGame2").onclick = () => { if (typeof sessionUser !== "undefined" && !sessionUser) return showScreen("auth"); tttStart(); };
+    $("btnStartGame3").onclick = () => { if (typeof sessionUser !== "undefined" && !sessionUser) return showScreen("auth"); chkStart(); };
 
     // init checkers
     chkNewGame();
