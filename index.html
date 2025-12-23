@@ -1403,25 +1403,39 @@ canvas, .canvasWrap, .gameWrap {
       friends: $("screenFriends"),
     };
 
+    // Ensure a visible default screen even if something else fails
+    document.addEventListener("DOMContentLoaded", () => {
+      try { showScreen("home"); } catch(e) { console.error(e); }
+    });
+
     const statusText = $("statusText");
     let lastNonHelpScreen = "home";
 
-    function showScreen(name){
-      for (const k in screens) screens[k].classList.remove("active");
-      screens[name].classList.add("active");
+        function showScreen(name){
+      // Hide all
+      for (const k in screens){
+        const el = screens[k];
+        if (el) el.classList.remove("active");
+      }
 
-      if (name !== "help") lastNonHelpScreen = name;
+      const target = screens[name];
+      if (target) target.classList.add("active");
+      else console.warn("Unknown screen:", name);
 
-      statusText.textContent =
-        name === "home" ? "Start klaar" :
-        name === "how" ? "Uitleg" :
-        name === "select" ? "Game select" :
-        name === "help" ? "Arcade AI" :
-        name === "auth" ? "Login" :
-        name === "friends" ? "Friends" :
-        name === "game1" ? "Playing: Neon Dodger" :
-        name === "game2" ? "Playing: TicTacToe" :
-        name === "game3" ? "Playing: Dammen" : "—";
+      if (name !== "help" && target) lastNonHelpScreen = name;
+
+      if (statusText){
+        statusText.textContent =
+          name === "home" ? "Start klaar" :
+          name === "how" ? "Uitleg" :
+          name === "select" ? "Game select" :
+          name === "help" ? "Arcade AI" :
+          name === "auth" ? "Login" :
+          name === "friends" ? "Friends" :
+          name === "game1" ? "Playing: Neon Dodger" :
+          name === "game2" ? "Playing: TicTacToe" :
+          name === "game3" ? "Playing: Dammen" : "—";
+      }
     }
 
     function openHelp(prefill){
