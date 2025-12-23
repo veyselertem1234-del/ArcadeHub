@@ -203,7 +203,7 @@
       background: radial-gradient(400px 180px at 20% 0%, rgba(109,240,255,.20), transparent 60%),
                   radial-gradient(420px 220px at 90% 40%, rgba(184,107,255,.18), transparent 65%);
       transform: rotate(6deg);
-      pointer-events:none;
+      pointer-events:auto;
     }
     .gameCard > *{ position:relative; }
     .gameTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
@@ -1397,27 +1397,6 @@ canvas, .canvasWrap, .gameWrap {
           currentScreen === "auth" ? "Login" :
           currentScreen === "friends" ? "Friends" :
           "Arcade Hub";
-      }
-    }
-
-
-      const target = screens[name];
-      if (target) target.classList.add("active");
-      else console.warn("Unknown screen:", name);
-
-      if (name !== "help" && target) lastNonHelpScreen = name;
-
-      if (statusText){
-        statusText.textContent =
-          name === "home" ? "Start klaar" :
-          name === "how" ? "Uitleg" :
-          name === "select" ? "Game select" :
-          name === "help" ? "Arcade AI" :
-          name === "auth" ? "Login" :
-          name === "friends" ? "Friends" :
-          name === "game1" ? "Playing: Neon Dodger" :
-          name === "game2" ? "Playing: TicTacToe" :
-          name === "game3" ? "Playing: Dammen" : "—";
       }
     }
 
