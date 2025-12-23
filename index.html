@@ -1,10 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html lang="nl">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Arcade Hub</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>Arcade Hub</title>
+<style>
     :root{
       --bg0:#070812;
       --bg1:#0b1030;
@@ -659,440 +660,397 @@ canvas, .canvasWrap, .gameWrap {
 </style>
 </head>
 <body class="safe">
-  <div class="bg"></div>
-  <div class="noise"></div>
-
-  <div class="app">
-    <div class="topbar">
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <div style="font-size:13px; color:rgba(219,230,255,.75); line-height:1.1;">Arcade Hub</div>
-          <div style="font-size:14px; line-height:1.1;"><b>Mini Games</b></div>
-        </div>
-      </div>
-
-      <div style="display:flex; gap:10px; align-items:center;">
-        <button class="btn ghost" id="btnFriendsTop" style="padding:8px 12px; border-radius:999px;">Friends</button>
-        <button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;">Hulp</button>
-        <div class="pill">
-          <span class="dot" aria-hidden="true"></span>
-          <span id="statusText">Start klaar</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="stage" id="stage">
-      <!-- HOME -->
-      <section class="screen active" id="screenHome">
-        <div class="card hero">
-          <div class="panel">
-            <h1>Welkom 👾</h1>
-            <p>
+<div class="bg"></div>
+<div class="noise"></div>
+<div class="app">
+<div class="topbar">
+<div class="brand">
+<div aria-hidden="true" class="logo"></div>
+<div>
+<div style="font-size:13px; color:rgba(219,230,255,.75); line-height:1.1;">Arcade Hub</div>
+<div style="font-size:14px; line-height:1.1;"><b>Mini Games</b></div>
+</div>
+</div>
+<div style="display:flex; gap:10px; align-items:center;">
+<button class="btn ghost" id="btnFriendsTop" style="padding:8px 12px; border-radius:999px;">Friends</button>
+<button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;">Hulp</button>
+<div class="pill">
+<span aria-hidden="true" class="dot"></span>
+<span id="statusText">Start klaar</span>
+</div>
+</div>
+</div>
+<div class="stage" id="stage">
+<!-- HOME -->
+<section class="screen active" id="screenHome">
+<div class="card hero">
+<div class="panel">
+<h1>Welkom 👾</h1>
+<p>
               Dit is jouw <b>Arcade Hub</b>: een mooie startpagina met een menu om games te kiezen.
               We hebben nu <b>3</b> games: Neon Dodger, TicTacToe en <b>Dammen</b>.
             </p>
-            <div class="btnrow">
-              <button class="btn primary" id="btnPlay">Play</button>
-              <button class="btn ghost" id="btnHow">Hoe werkt het?</button>
-              <button class="btn ghost" id="btnHelpHome">Hulp (Arcade AI)</button>
-            </div>
-            <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
-              <span class="tag"><span class="mini"></span> Originele games</span>
-              <span class="tag"><span class="mini" style="background:var(--good)"></span> Mooie UI</span>
-              <span class="tag"><span class="mini" style="background:var(--bad)"></span> 1 bestand</span>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h2>Vandaag</h2>
-            <div class="kv">
-              <div>Game 1</div><div><b>Neon Dodger</b></div>
-              <div>Game 2</div><div><b>TicTacToe</b></div>
-              <div>Game 3</div><div><b>Dammen</b></div>
-              <div>Extra</div><div><span class="kbd">AI</span> easy/normal/hard</div>
-            </div>
-            <p style="margin-top:10px;">
+<div class="btnrow">
+<button class="btn primary" id="btnPlay">Play</button>
+<button class="btn ghost" id="btnHow">Hoe werkt het?</button>
+<button class="btn ghost" id="btnHelpHome">Hulp (Arcade AI)</button>
+</div>
+<div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+<span class="tag"><span class="mini"></span> Originele games</span>
+<span class="tag"><span class="mini" style="background:var(--good)"></span> Mooie UI</span>
+<span class="tag"><span class="mini" style="background:var(--bad)"></span> 1 bestand</span>
+</div>
+</div>
+<div class="panel">
+<h2>Vandaag</h2>
+<div class="kv">
+<div>Game 1</div><div><b>Neon Dodger</b></div>
+<div>Game 2</div><div><b>TicTacToe</b></div>
+<div>Game 3</div><div><b>Dammen</b></div>
+<div>Extra</div><div><span class="kbd">AI</span> easy/normal/hard</div>
+</div>
+<p style="margin-top:10px;">
               Tip: open in <b>fullscreen</b> voor de beste vibe.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- HOW -->
-      <section class="screen" id="screenHow">
-        <div class="card">
-          <h1>Hoe werkt het?</h1>
-          <p>
+</div>
+</div>
+</section>
+<!-- HOW -->
+<section class="screen" id="screenHow">
+<div class="card">
+<h1>Hoe werkt het?</h1>
+<p>
             1) Klik <b>Play</b> → 2) Kies een game → 3) Speel.
             Game 2 en 3 hebben <b>PvP</b> of <b>tegen AI</b> (easy/normal/hard).
           </p>
-          <div class="panel">
-            <h2>Game 3: Dammen</h2>
-            <p class="hint">
-              Regels:<br>
-              • Je <b>moet slaan</b> als je kan opeten.<br>
-              • Normale dam: <b>alleen vooruit</b> (lopen & slaan).<br>
-              • King: <b>alle kanten op</b> (lopen & slaan).<br>
-              • Bij slaan kan je soms <b>meerdere keren</b> achter elkaar slaan.<br>
+<div class="panel">
+<h2>Game 3: Dammen</h2>
+<p class="hint">
+              Regels:<br/>
+              • Je <b>moet slaan</b> als je kan opeten.<br/>
+              • Normale dam: <b>alleen vooruit</b> (lopen &amp; slaan).<br/>
+              • King: <b>alle kanten op</b> (lopen &amp; slaan).<br/>
+              • Bij slaan kan je soms <b>meerdere keren</b> achter elkaar slaan.<br/>
               • Overkant = <b>king</b> (kroon).
             </p>
-          </div>
-          <div class="btnrow">
-            <button class="btn primary" id="btnHowContinue">Naar games</button>
-            <button class="btn ghost" id="btnHowBack">Terug</button>
-            <button class="btn ghost" id="btnHelpHow">Hulp</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- SELECT -->
-      <section class="screen" id="screenSelect">
-        <div class="card">
-          <h1>Kies een spel</h1>
-          <p>Alles werkt lokaal via de server (zodat Arcade AI echt werkt).</p>
-
-          <div class="games">
-            <div class="gameCard">
-              <div class="gameTop">
-                <div>
-                  <div class="gameTitle">Game 1 — Neon Dodger</div>
-                  <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+</div>
+<div class="btnrow">
+<button class="btn primary" id="btnHowContinue">Naar games</button>
+<button class="btn ghost" id="btnHowBack">Terug</button>
+<button class="btn ghost" id="btnHelpHow">Hulp</button>
+</div>
+</div>
+</section>
+<!-- SELECT -->
+<section class="screen" id="screenSelect">
+<div class="card">
+<h1>Kies een spel</h1>
+<p>Alles werkt lokaal via de server (zodat Arcade AI echt werkt).</p>
+<div class="games">
+<div class="gameCard">
+<div class="gameTop">
+<div>
+<div class="gameTitle">Game 1 — Neon Dodger</div>
+<div style="color:var(--muted); font-size:13px; margin-top:4px;">
                     Overleef, ontwijk, pak orbs. Snel en strak.
                   </div>
-                </div>
-                <div class="badge live">Playable</div>
-              </div>
-              <div class="gameActions">
-                <button class="btn primary" id="btnStartGame1">Start</button>
-                <button class="btn ghost" id="btnHomeFromSelect1">Home</button>
-              </div>
-            </div>
-
-            <div class="gameCard">
-              <div class="gameTop">
-                <div>
-                  <div class="gameTitle">Game 2 — TicTacToe</div>
-                  <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+</div>
+<div class="badge live">Playable</div>
+</div>
+<div class="gameActions">
+<button class="btn primary" id="btnStartGame1">Start</button>
+<button class="btn ghost" id="btnHomeFromSelect1">Home</button>
+</div>
+</div>
+<div class="gameCard">
+<div class="gameTop">
+<div>
+<div class="gameTitle">Game 2 — TicTacToe</div>
+<div style="color:var(--muted); font-size:13px; margin-top:4px;">
                     PvP of tegen AI: easy / normal / hard.
                   </div>
-                </div>
-                <div class="badge live">Playable</div>
-              </div>
-              <div class="gameActions">
-                <button class="btn primary" id="btnStartGame2">Start</button>
-                <button class="btn ghost" id="btnHomeFromSelect2">Home</button>
-              </div>
-            </div>
-
-            <div class="gameCard">
-              <div class="gameTop">
-                <div>
-                  <div class="gameTitle">Game 3 — Dammen</div>
-                  <div style="color:var(--muted); font-size:13px; margin-top:4px;">
+</div>
+<div class="badge live">Playable</div>
+</div>
+<div class="gameActions">
+<button class="btn primary" id="btnStartGame2">Start</button>
+<button class="btn ghost" id="btnHomeFromSelect2">Home</button>
+</div>
+</div>
+<div class="gameCard">
+<div class="gameTop">
+<div>
+<div class="gameTitle">Game 3 — Dammen</div>
+<div style="color:var(--muted); font-size:13px; margin-top:4px;">
                     PvP of tegen AI (easy/normal/hard). Slaan is verplicht.
                   </div>
-                </div>
-                <div class="badge live">Playable</div>
-              </div>
-              <div class="gameActions">
-                <button class="btn primary" id="btnStartGame3">Start</button>
-                <button class="btn ghost" id="btnHomeFromSelect3">Home</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="btnrow" style="margin-top:14px;">
-            <button class="btn ghost" id="btnBackHomeFromSelect">Terug</button>
-            <button class="btn ghost" id="btnHelpSelect">Hulp (Arcade AI)</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- HELP -->
-      <section class="screen" id="screenHelp">
-        <div class="helpWrap" style="display:grid; place-items:center; padding:18px;">
-          <div class="chatShell">
-            <div class="chatTop">
-              <div class="chatTitle">
+</div>
+<div class="badge live">Playable</div>
+</div>
+<div class="gameActions">
+<button class="btn primary" id="btnStartGame3">Start</button>
+<button class="btn ghost" id="btnHomeFromSelect3">Home</button>
+</div>
+</div>
+</div>
+<div class="btnrow" style="margin-top:14px;">
+<button class="btn ghost" id="btnBackHomeFromSelect">Terug</button>
+<button class="btn ghost" id="btnHelpSelect">Hulp (Arcade AI)</button>
+</div>
+</div>
+</section>
+<!-- HELP -->
+<section class="screen" id="screenHelp">
+<div class="helpWrap" style="display:grid; place-items:center; padding:18px;">
+<div class="chatShell">
+<div class="chatTop">
+<div class="chatTitle">
                 Arcade AI
                 <span class="aiBadge">Echte AI</span>
-              </div>
-              <div style="display:flex; gap:10px; align-items:center;">
-                <button class="hudBtn" id="aiClearBtn">Clear</button>
-                <button class="hudBtn" id="aiBackBtn">Terug</button>
-              </div>
-            </div>
-
-            <div class="smallHintRow">
+</div>
+<div style="display:flex; gap:10px; align-items:center;">
+<button class="hudBtn" id="aiClearBtn">Clear</button>
+<button class="hudBtn" id="aiBackBtn">Terug</button>
+</div>
+</div>
+<div class="smallHintRow">
               Klik een tip of typ een vraag:
               <span class="chip" data-q="Hoe speel ik dammen?">Dammen regels</span>
-              <span class="chip" data-q="Waarom moet ik slaan in dammen?">Slaan verplicht</span>
-              <span class="chip" data-q="Wat is de beste zet nu? Leg uit.">Beste zet</span>
-              <span class="chip" data-q="Ik zie een zwart scherm, wat nu?">Zwart scherm</span>
-              <span class="chip" data-q="Controls van Neon Dodger?">Controls</span>
-            </div>
-
-            <div class="chatLog" id="aiLog"></div>
-
-            <div class="chatBottom">
-              <input class="chatInput" id="aiInput" placeholder="Vraag iets aan Arcade AI… (Enter = send)" />
-              <button class="btn primary" id="aiSendBtn" style="padding:10px 14px;">Send</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- GAME 1 -->
-      <section class="screen" id="screenGame1">
-        <div class="gameWrap">
-          <div class="gameHud">
-            <div class="hudBox">
-              <div>Score: <b id="scoreEl">0</b> • Best: <b id="bestEl">0</b></div>
-              <div style="margin-top:4px;">Level: <b id="levelEl">1</b> • Tijd: <b id="timeEl">0.0</b>s</div>
-            </div>
-            <div class="hudBtns">
-              <button class="hudBtn" id="btnPause">Pause (P)</button>
-              <button class="hudBtn" id="btnRestart">Restart (R)</button>
-              <button class="hudBtn" id="btnToMenu">Menu</button>
-              <button class="hudBtn" id="btnHelpGame1">Hulp</button>
-            </div>
-          </div>
-          <canvas id="gameCanvas"></canvas>
-        </div>
-      </section>
-
-      <!-- GAME 2 -->
-      <section class="screen" id="screenGame2">
-        <div class="tttWrap">
-          <div class="gameHud">
-            <div class="hudBox">
-              <div><b>TicTacToe</b> • Mode: <b id="tttModeLabel">—</b> • Diff: <b id="tttDiffLabel">—</b></div>
-              <div style="margin-top:4px;">Aan zet: <b id="tttTurnLabel">—</b> • Status: <b id="tttStatusLabel">—</b></div>
-            </div>
-            <div class="hudBtns">
-              <button class="hudBtn" id="tttRestartBtn">Restart</button>
-              <button class="hudBtn" id="tttSetupBtn">Setup</button>
-              <button class="hudBtn" id="tttMenuBtn">Menu</button>
-              <button class="hudBtn" id="btnHelpGame2">Hulp</button>
-            </div>
-          </div>
-
-          <div class="tttStage">
-            <div class="tttBoard" id="tttBoard"></div>
-          </div>
-
-          <div class="setupOverlay" id="tttSetupOverlay">
-            <div class="card">
-              <h1>Game 2 — TicTacToe</h1>
-              <p>Kies PvP of tegen AI. Hard speelt perfect (minimax).</p>
-
-              <div class="row2">
-                <div class="panel">
-                  <h2>Mode</h2>
-                  <div class="opt" id="tttModeOpts">
-                    <button class="chipBtn active" data-mode="pvp">PvP (2 spelers)</button>
-                    <button class="chipBtn" data-mode="ai">Vs AI</button>
-                  </div>
-
-                  <div style="margin-top:12px;">
-                    <h2>Wie begint?</h2>
-                    <div class="opt" id="tttStartOpts">
-                      <button class="chipBtn active" data-start="X">X begint</button>
-                      <button class="chipBtn" data-start="O">O begint</button>
-                    </div>
-                    <p class="hint" style="margin-top:8px;">
+<span class="chip" data-q="Waarom moet ik slaan in dammen?">Slaan verplicht</span>
+<span class="chip" data-q="Wat is de beste zet nu? Leg uit.">Beste zet</span>
+<span class="chip" data-q="Ik zie een zwart scherm, wat nu?">Zwart scherm</span>
+<span class="chip" data-q="Controls van Neon Dodger?">Controls</span>
+</div>
+<div class="chatLog" id="aiLog"></div>
+<div class="chatBottom">
+<input class="chatInput" id="aiInput" placeholder="Vraag iets aan Arcade AI… (Enter = send)"/>
+<button class="btn primary" id="aiSendBtn" style="padding:10px 14px;">Send</button>
+</div>
+</div>
+</div>
+</section>
+<!-- GAME 1 -->
+<section class="screen" id="screenGame1">
+<div class="gameWrap">
+<div class="gameHud">
+<div class="hudBox">
+<div>Score: <b id="scoreEl">0</b> • Best: <b id="bestEl">0</b></div>
+<div style="margin-top:4px;">Level: <b id="levelEl">1</b> • Tijd: <b id="timeEl">0.0</b>s</div>
+</div>
+<div class="hudBtns">
+<button class="hudBtn" id="btnPause">Pause (P)</button>
+<button class="hudBtn" id="btnRestart">Restart (R)</button>
+<button class="hudBtn" id="btnToMenu">Menu</button>
+<button class="hudBtn" id="btnHelpGame1">Hulp</button>
+</div>
+</div>
+<canvas id="gameCanvas"></canvas>
+</div>
+</section>
+<!-- GAME 2 -->
+<section class="screen" id="screenGame2">
+<div class="tttWrap">
+<div class="gameHud">
+<div class="hudBox">
+<div><b>TicTacToe</b> • Mode: <b id="tttModeLabel">—</b> • Diff: <b id="tttDiffLabel">—</b></div>
+<div style="margin-top:4px;">Aan zet: <b id="tttTurnLabel">—</b> • Status: <b id="tttStatusLabel">—</b></div>
+</div>
+<div class="hudBtns">
+<button class="hudBtn" id="tttRestartBtn">Restart</button>
+<button class="hudBtn" id="tttSetupBtn">Setup</button>
+<button class="hudBtn" id="tttMenuBtn">Menu</button>
+<button class="hudBtn" id="btnHelpGame2">Hulp</button>
+</div>
+</div>
+<div class="tttStage">
+<div class="tttBoard" id="tttBoard"></div>
+</div>
+<div class="setupOverlay" id="tttSetupOverlay">
+<div class="card">
+<h1>Game 2 — TicTacToe</h1>
+<p>Kies PvP of tegen AI. Hard speelt perfect (minimax).</p>
+<div class="row2">
+<div class="panel">
+<h2>Mode</h2>
+<div class="opt" id="tttModeOpts">
+<button class="chipBtn active" data-mode="pvp">PvP (2 spelers)</button>
+<button class="chipBtn" data-mode="ai">Vs AI</button>
+</div>
+<div style="margin-top:12px;">
+<h2>Wie begint?</h2>
+<div class="opt" id="tttStartOpts">
+<button class="chipBtn active" data-start="X">X begint</button>
+<button class="chipBtn" data-start="O">O begint</button>
+</div>
+<p class="hint" style="margin-top:8px;">
                       In AI mode is <b>X</b> de mens en <b>O</b> de AI.
                     </p>
-                  </div>
-                </div>
-
-                <div class="panel">
-                  <h2>AI moeilijkheid</h2>
-                  <div class="opt" id="tttDiffOpts">
-                    <button class="chipBtn active" data-diff="easy">Easy</button>
-                    <button class="chipBtn" data-diff="normal">Normal</button>
-                    <button class="chipBtn" data-diff="hard">Hard</button>
-                  </div>
-                  <p class="hint" style="margin-top:10px;">
-                    <b>Easy</b>: random<br>
-                    <b>Normal</b>: wint/blokkeert + slimme keuzes<br>
-                    <b>Hard</b>: perfecte play (minimax)
+</div>
+</div>
+<div class="panel">
+<h2>AI moeilijkheid</h2>
+<div class="opt" id="tttDiffOpts">
+<button class="chipBtn active" data-diff="easy">Easy</button>
+<button class="chipBtn" data-diff="normal">Normal</button>
+<button class="chipBtn" data-diff="hard">Hard</button>
+</div>
+<p class="hint" style="margin-top:10px;">
+<b>Easy</b>: random<br/>
+<b>Normal</b>: wint/blokkeert + slimme keuzes<br/>
+<b>Hard</b>: perfecte play (minimax)
                   </p>
-
-                  <div class="btnrow" style="margin-top:12px;">
-                    <button class="btn primary" id="tttStartBtn">Start spel</button>
-                    <button class="btn ghost" id="tttCancelBtn">Terug</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <!-- GAME 3 -->
-      <section class="screen" id="screenGame3">
-        <div class="chkWrap">
-          <div class="gameHud">
-            <div class="hudBox">
-              <div><b>Dammen</b> • Mode: <b id="chkModeLabel">—</b> • Diff: <b id="chkDiffLabel">—</b></div>
-              <div style="margin-top:4px;">
+<div class="btnrow" style="margin-top:12px;">
+<button class="btn primary" id="tttStartBtn">Start spel</button>
+<button class="btn ghost" id="tttCancelBtn">Terug</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- GAME 3 -->
+<section class="screen" id="screenGame3">
+<div class="chkWrap">
+<div class="gameHud">
+<div class="hudBox">
+<div><b>Dammen</b> • Mode: <b id="chkModeLabel">—</b> • Diff: <b id="chkDiffLabel">—</b></div>
+<div style="margin-top:4px;">
                 Aan zet: <b id="chkTurnLabel">—</b> • Status: <b id="chkStatusLabel">—</b>
-              </div>
-            </div>
-            <div class="hudBtns">
-              <button class="hudBtn" id="chkRestartBtn">Restart</button>
-              <button class="hudBtn" id="chkSetupBtn">Setup</button>
-              <button class="hudBtn" id="chkMenuBtn">Menu</button>
-              <button class="hudBtn" id="btnHelpGame3">Hulp</button>
-            </div>
-          </div>
-
-          <div class="chkStage">
-            <div class="chkBoard" id="chkBoard"></div>
-          </div>
-
-          <div class="setupOverlay" id="chkSetupOverlay">
-            <div class="card">
-              <h1>Game 3 — Dammen</h1>
-              <p class="hint">
+</div>
+</div>
+<div class="hudBtns">
+<button class="hudBtn" id="chkRestartBtn">Restart</button>
+<button class="hudBtn" id="chkSetupBtn">Setup</button>
+<button class="hudBtn" id="chkMenuBtn">Menu</button>
+<button class="hudBtn" id="btnHelpGame3">Hulp</button>
+</div>
+</div>
+<div class="chkStage">
+<div class="chkBoard" id="chkBoard"></div>
+</div>
+<div class="setupOverlay" id="chkSetupOverlay">
+<div class="card">
+<h1>Game 3 — Dammen</h1>
+<p class="hint">
                 Regels: slaan is verplicht • normale dam alleen vooruit • king alle kanten op.
               </p>
-
-              <div class="row2">
-                <div class="panel">
-                  <h2>Mode</h2>
-                  <div class="opt" id="chkModeOpts">
-                    <button class="chipBtn active" data-mode="pvp">PvP (2 spelers)</button>
-                    <button class="chipBtn" data-mode="ai">Vs AI</button>
-                  </div>
-
-                  <div style="margin-top:12px;">
-                    <h2>Wie begint?</h2>
-                    <div class="opt" id="chkStartOpts">
-                      <button class="chipBtn active" data-start="R">Rood begint</button>
-                      <button class="chipBtn" data-start="B">Blauw begint</button>
-                    </div>
-                    <p class="hint" style="margin-top:8px;">
+<div class="row2">
+<div class="panel">
+<h2>Mode</h2>
+<div class="opt" id="chkModeOpts">
+<button class="chipBtn active" data-mode="pvp">PvP (2 spelers)</button>
+<button class="chipBtn" data-mode="ai">Vs AI</button>
+</div>
+<div style="margin-top:12px;">
+<h2>Wie begint?</h2>
+<div class="opt" id="chkStartOpts">
+<button class="chipBtn active" data-start="R">Rood begint</button>
+<button class="chipBtn" data-start="B">Blauw begint</button>
+</div>
+<p class="hint" style="margin-top:8px;">
                       In AI mode is <b>Rood</b> de mens en <b>Blauw</b> de AI.
                     </p>
-                  </div>
-                </div>
-
-                <div class="panel">
-                  <h2>AI moeilijkheid</h2>
-                  <div class="opt" id="chkDiffOpts">
-                    <button class="chipBtn active" data-diff="easy">Easy</button>
-                    <button class="chipBtn" data-diff="normal">Normal</button>
-                    <button class="chipBtn" data-diff="hard">Hard</button>
-                  </div>
-                  <p class="hint" style="margin-top:10px;">
-                    <b>Easy</b>: random zetten<br>
-                    <b>Normal</b>: pakt slagen + simpele score<br>
-                    <b>Hard</b>: minimax (dieper nadenken)
+</div>
+</div>
+<div class="panel">
+<h2>AI moeilijkheid</h2>
+<div class="opt" id="chkDiffOpts">
+<button class="chipBtn active" data-diff="easy">Easy</button>
+<button class="chipBtn" data-diff="normal">Normal</button>
+<button class="chipBtn" data-diff="hard">Hard</button>
+</div>
+<p class="hint" style="margin-top:10px;">
+<b>Easy</b>: random zetten<br/>
+<b>Normal</b>: pakt slagen + simpele score<br/>
+<b>Hard</b>: minimax (dieper nadenken)
                   </p>
+<div class="btnrow" style="margin-top:12px;">
+<button class="btn primary" id="chkStartBtn">Start spel</button>
+<button class="btn ghost" id="chkCancelBtn">Terug</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- AUTH -->
 
-                  <div class="btnrow" style="margin-top:12px;">
-                    <button class="btn primary" id="chkStartBtn">Start spel</button>
-                    <button class="btn ghost" id="chkCancelBtn">Terug</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+<!-- FRIENDS -->
 
-        </div>
-      <!-- AUTH -->
-      <section class="screen" id="screenAuth">
-        <div class="card" style="width:min(520px,96vw);">
-          <h1>Inloggen</h1>
-          <p>Log in met e-mail en wachtwoord. Nieuwe? Maak een account en kies een gebruikersnaam.</p>
-
-          <div class="panel" style="margin-top:12px;">
-            <h2>Login</h2>
-            <div style="display:grid; gap:10px; margin-top:8px;">
-              <input class="chatInput" id="loginEmail" placeholder="E-mail" />
-              <input class="chatInput" id="loginPass" type="password" placeholder="Wachtwoord" />
-              <button class="btn primary" id="btnLogin">Login</button>
-              <div id="loginMsg" style="color:rgba(219,230,255,.75); font-size:13px;"></div>
-            </div>
-          </div>
-
-          <div class="panel" style="margin-top:12px;">
-            <h2>Account maken</h2>
-            <div style="display:grid; gap:10px; margin-top:8px;">
-              <input class="chatInput" id="signupUser" placeholder="Gebruikersnaam" />
-              <input class="chatInput" id="signupEmail" placeholder="E-mail" />
-              <input class="chatInput" id="signupPass" type="password" placeholder="Wachtwoord (min. 6 tekens)" />
-              <button class="btn" id="btnSignup">Maak account</button>
-              <div id="signupMsg" style="color:rgba(219,230,255,.75); font-size:13px;"></div>
-            </div>
-            <p class="hint" style="margin-top:10px;">
+</section>
+<section class="screen" id="screenAuth">
+<div class="card" style="width:min(520px,96vw);">
+<h1>Inloggen</h1>
+<p>Log in met e-mail en wachtwoord. Nieuwe? Maak een account en kies een gebruikersnaam.</p>
+<div class="panel" style="margin-top:12px;">
+<h2>Login</h2>
+<div style="display:grid; gap:10px; margin-top:8px;">
+<input class="chatInput" id="loginEmail" placeholder="E-mail"/>
+<input class="chatInput" id="loginPass" placeholder="Wachtwoord" type="password"/>
+<button class="btn primary" id="btnLogin">Login</button>
+<div id="loginMsg" style="color:rgba(219,230,255,.75); font-size:13px;"></div>
+</div>
+</div>
+<div class="panel" style="margin-top:12px;">
+<h2>Account maken</h2>
+<div style="display:grid; gap:10px; margin-top:8px;">
+<input class="chatInput" id="signupUser" placeholder="Gebruikersnaam"/>
+<input class="chatInput" id="signupEmail" placeholder="E-mail"/>
+<input class="chatInput" id="signupPass" placeholder="Wachtwoord (min. 6 tekens)" type="password"/>
+<button class="btn" id="btnSignup">Maak account</button>
+<div id="signupMsg" style="color:rgba(219,230,255,.75); font-size:13px;"></div>
+</div>
+<p class="hint" style="margin-top:10px;">
               Tip: kopieer je publishable key volledig uit Supabase (die is lang). Anders werkt login niet.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- FRIENDS -->
-      <section class="screen" id="screenFriends">
-        <div class="card">
-          <h1>Friends</h1>
-          <p>Voeg vrienden toe met hun gebruikersnaam. (Voor online spelen gaan we straks rooms koppelen.)</p>
-
-          <div class="row2">
-            <div class="panel">
-              <h2>Vriend toevoegen</h2>
-              <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-                <input class="chatInput" id="friendUsername" placeholder="Gebruikersnaam" style="flex:1; min-width: 220px;" />
-                <button class="btn primary" id="btnAddFriend">Toevoegen</button>
-              </div>
-              <div id="friendAddMsg" style="margin-top:10px; color:rgba(219,230,255,.75); font-size:13px;"></div>
-            </div>
-
-            <div class="panel">
-              <h2>Jij</h2>
-              <div class="kv" style="margin-top:8px;">
-                <div>Gebruiker</div><div><b id="meUserLabel">—</b></div>
-                <div>E-mail</div><div><b id="meEmailLabel">—</b></div>
-              </div>
-              <div class="btnrow" style="margin-top:12px;">
-                <button class="btn ghost" id="btnFriendsBack">Terug</button>
-                <button class="btn" id="btnLogout">Logout</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="panel" style="margin-top:12px;">
-            <h2>Requests</h2>
-            <div id="requestsList" style="display:grid; gap:10px; margin-top:10px;"></div>
-          </div>
-
-          <div class="panel" style="margin-top:12px;">
-            <h2>Vrienden</h2>
-            <div id="friendsList" style="display:grid; gap:10px; margin-top:10px;"></div>
-          </div>
-
-          <p class="hint" style="margin-top:12px;">
+</div>
+</div>
+</section><section class="screen" id="screenFriends">
+<div class="card">
+<h1>Friends</h1>
+<p>Voeg vrienden toe met hun gebruikersnaam. (Voor online spelen gaan we straks rooms koppelen.)</p>
+<div class="row2">
+<div class="panel">
+<h2>Vriend toevoegen</h2>
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+<input class="chatInput" id="friendUsername" placeholder="Gebruikersnaam" style="flex:1; min-width: 220px;"/>
+<button class="btn primary" id="btnAddFriend">Toevoegen</button>
+</div>
+<div id="friendAddMsg" style="margin-top:10px; color:rgba(219,230,255,.75); font-size:13px;"></div>
+</div>
+<div class="panel">
+<h2>Jij</h2>
+<div class="kv" style="margin-top:8px;">
+<div>Gebruiker</div><div><b id="meUserLabel">—</b></div>
+<div>E-mail</div><div><b id="meEmailLabel">—</b></div>
+</div>
+<div class="btnrow" style="margin-top:12px;">
+<button class="btn ghost" id="btnFriendsBack">Terug</button>
+<button class="btn" id="btnLogout">Logout</button>
+</div>
+</div>
+</div>
+<div class="panel" style="margin-top:12px;">
+<h2>Requests</h2>
+<div id="requestsList" style="display:grid; gap:10px; margin-top:10px;"></div>
+</div>
+<div class="panel" style="margin-top:12px;">
+<h2>Vrienden</h2>
+<div id="friendsList" style="display:grid; gap:10px; margin-top:10px;"></div>
+</div>
+<p class="hint" style="margin-top:12px;">
             Als je hier errors ziet, moeten we straks in Supabase tabellen + policies aanzetten.
           </p>
-        </div>
-      </section>
-
-      </section>
-
-    </div>
-
-    <div class="footer">
-      <div>© Arcade Hub • server + 1 HTML</div>
-      <div>Tip: <span class="kbd">P</span> pause (Game 1)</div>
-    </div>
-  </div>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-
-  <script>
+</div>
+</section></div>
+<div class="footer">
+<div>© Arcade Hub • server + 1 HTML</div>
+<div>Tip: <span class="kbd">P</span> pause (Game 1)</div>
+</div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
     // -------------------------------
     // Router
     // -------------------------------
