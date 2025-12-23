@@ -1372,7 +1372,7 @@ canvas, .canvasWrap, .gameWrap {
     if (authUi.btnSignup) authUi.btnSignup.onclick = doSignup;
     if (authUi.btnLogout) authUi.btnLogout.onclick = doLogout;
     if (authUi.btnFriendsTop) authUi.btnFriendsTop.onclick = openFriends;
-    if (authUi.btnFriendsBack) authUi.btnFriendsBack.onclick = () => showScreen(lastNonHelpScreen || "home");
+    if (authUi.btnFriendsBack) authUi.btnFriendsBack.onclick = () => showScreen("home");
     if (authUi.btnAddFriend) authUi.btnAddFriend.onclick = addFriendByUsername;
     if (authUi.requestsList) authUi.requestsList.addEventListener("click", handleRequestsClick);
 
@@ -1412,11 +1412,36 @@ canvas, .canvasWrap, .gameWrap {
     let lastNonHelpScreen = "home";
 
         function showScreen(name){
-      // Hide all
-      for (const k in screens){
-        const el = screens[k];
-        if (el) el.classList.remove("active");
+      // SAFE router: never end up with zero active screens
+      const desired = (typeof name === "string" && name.trim()) ? name.trim() : "home";
+      const target = screens[desired] || screens["home"];
+
+      // If for some reason target is missing, do nothing
+      if (!target) return;
+
+      // Hide all screens first
+      Object.values(screens).forEach(el => { if (el) el.classList.remove("active"); });
+
+      // Activate
+      target.classList.add("active");
+      currentScreen = desired in screens ? desired : "home";
+      if (currentScreen !== "help") lastNonHelpScreen = currentScreen;
+
+      // Update status text (optional)
+      if (statusText) {
+        statusText.textContent =
+          currentScreen === "home" ? "Start" :
+          currentScreen === "select" ? "Kies een game" :
+          currentScreen === "g1" ? "Neon Dodger" :
+          currentScreen === "g2" ? "TicTacToe" :
+          currentScreen === "g3" ? "Dammen" :
+          currentScreen === "help" ? "Arcade AI" :
+          currentScreen === "auth" ? "Login" :
+          currentScreen === "friends" ? "Friends" :
+          "Arcade Hub";
       }
+    }
+
 
       const target = screens[name];
       if (target) target.classList.add("active");
@@ -1596,7 +1621,7 @@ canvas, .canvasWrap, .gameWrap {
       }
     });
 
-    aiBackBtn.onclick = () => showScreen(lastNonHelpScreen || "home");
+    aiBackBtn.onclick = () => showScreen("home");
     aiClearBtn.onclick = () => {
       aiState.messages = [];
       aiRender();
