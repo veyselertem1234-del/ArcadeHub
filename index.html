@@ -592,78 +592,27 @@
       user-select:none;
     }
     .chip:hover{ border-color: rgba(160,180,255,.22); filter: brightness(1.06); }
-  /* =========================
-   Mobile friendly upgrades
-   ========================= */
-* { -webkit-tap-highlight-color: transparent; }
+  
 
-input, textarea, select, button {
-  font-size: 16px; /* prevents iOS zoom on focus */
+/* Mobile friendly upgrades v2 */
+*{-webkit-tap-highlight-color: transparent;}
+input, textarea, button{ font-size:16px; }
+.btn, .hudBtn{ min-height:44px; }
+.topbar{ flex-wrap:wrap; gap:10px; }
+.topbar .right{ flex-wrap:wrap; gap:10px; }
+@media (max-width: 900px){ .row2{ grid-template-columns:1fr !important; } }
+@media (max-width: 600px){
+  body{ padding:12px; }
+  .stage{ padding:14px; }
+  .btnrow{ flex-wrap:wrap; }
+  .btn, .hudBtn{ width:100%; }
+  .chatBox{ height:min(52vh, 420px); }
 }
-
-.btn, .hudBtn, .chip, .tabBtn {
-  min-height: 44px;
-}
-
-.topbar {
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.stage {
-  padding: 14px;
-}
-
-.card {
-  padding: 14px;
-}
-
-.row2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-@media (max-width: 900px) {
-  .row2 { grid-template-columns: 1fr; }
-}
-
-/* Make game canvases and panels fit small screens */
-canvas, .canvasWrap, .gameWrap {
-  max-width: 100%;
-}
-
-@media (max-width: 600px) {
-  body { padding: 12px; }
-  .topbar { flex-direction: column; align-items: stretch; }
-  .topbar .left, .topbar .right { width: 100%; justify-content: space-between; }
-  .topbar .right { flex-wrap: wrap; }
-  .card { border-radius: 14px; }
-  .btnrow { flex-wrap: wrap; }
-  .btn, .hudBtn { width: 100%; }
-  .chip { width: auto; }
-  .kv { grid-template-columns: 1fr; }
-  .tabs { flex-wrap: wrap; }
-  .tabBtn { flex: 1 1 140px; }
-  .chatBox { height: min(52vh, 420px); }
-  .chatInput { width: 100%; }
-}
-
-/* Respect safe areas (iPhone notch) */
-.safe {
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-
-/* TOPBAR_CLICKABLE */
-.topbar{position:relative; z-index:10; pointer-events:auto;}
-.topbar *{pointer-events:auto;}
+/* Decorative layers never block clicks */
+.bg, .noise, .card:before, .gameCard:before { pointer-events:none !important; }
 </style>
 </head>
-<body class="safe">
+<body>
 <div class="bg"></div>
 <div class="noise"></div>
 <div class="app">
@@ -676,11 +625,13 @@ canvas, .canvasWrap, .gameWrap {
 </div>
 </div>
 <div style="display:flex; gap:10px; align-items:center;">
-<button class="btn ghost" id="btnFriendsTop" style="padding:8px 12px; border-radius:999px;" type="button" onclick="try{openFriends();}catch(e){console.error(e);}">>Friends</button>
-<button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;" type="button" onclick="try{openHelp();}catch(e){console.error(e);}">>Hulp</button>
-<button class="pill" id="btnAuthTop" type="button" style="cursor:pointer;"><span aria-hidden="true" class="dot"></span><span id="statusText">Start klaar</span></button>
+<button class="btn ghost" id="btnFriendsTop" type="button">Friends</button><button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;">Hulp</button>
+<div class="pill">
+<span aria-hidden="true" class="dot"></span>
+<span id="statusText">Start klaar</span>
 </div>
 </div>
+<button class="btn" id="btnAuthTop" type="button">Login</button></div>
 <div class="stage" id="stage">
 <!-- HOME -->
 <section class="screen active" id="screenHome">
@@ -975,50 +926,53 @@ canvas, .canvasWrap, .gameWrap {
 </div>
 </div>
 </div>
-<!-- AUTH -->
-
-<!-- FRIENDS -->
-
 </section>
+
 <section class="screen" id="screenAuth">
-<div class="card" style="width:min(520px,96vw);">
+<div class="card" style="width:min(560px,96vw);">
 <h1>Inloggen</h1>
-<p>Log in met e-mail en wachtwoord. Nieuwe? Maak een account en kies een gebruikersnaam.</p>
-<div class="panel" style="margin-top:12px;">
+<p style="margin-top:6px; color:rgba(219,230,255,.8)">
+      Log in met e-mail en wachtwoord. Nieuwe? Maak een account en kies een gebruikersnaam.
+    </p>
+<div class="row2" style="margin-top:14px;">
+<div class="panel">
 <h2>Login</h2>
-<div style="display:grid; gap:10px; margin-top:8px;">
+<div style="display:grid; gap:10px; margin-top:10px;">
 <input class="chatInput" id="loginEmail" placeholder="E-mail"/>
 <input class="chatInput" id="loginPass" placeholder="Wachtwoord" type="password"/>
-<button class="btn primary" id="btnLogin">Login</button>
-<div id="loginMsg" style="color:rgba(219,230,255,.75); font-size:13px;"></div>
+<button class="btn primary" id="btnLogin" type="button">Login</button>
+<div class="hint" id="loginMsg"></div>
 </div>
 </div>
-<div class="panel" style="margin-top:12px;">
+<div class="panel">
 <h2>Account maken</h2>
-<div style="display:grid; gap:10px; margin-top:8px;">
-<input class="chatInput" id="signupUser" placeholder="Gebruikersnaam"/>
+<div style="display:grid; gap:10px; margin-top:10px;">
+<input class="chatInput" id="signupUser" placeholder="Gebruikersnaam (min 3)"/>
 <input class="chatInput" id="signupEmail" placeholder="E-mail"/>
-<input class="chatInput" id="signupPass" placeholder="Wachtwoord (min. 6 tekens)" type="password"/>
-<button class="btn" id="btnSignup">Maak account</button>
-<div id="signupMsg" style="color:rgba(219,230,255,.75); font-size:13px;"></div>
-</div>
-<p class="hint" style="margin-top:10px;">
-              Tip: kopieer je publishable key volledig uit Supabase (die is lang). Anders werkt login niet.
-            </p>
+<input class="chatInput" id="signupPass" placeholder="Wachtwoord (min 6)" type="password"/>
+<button class="btn" id="btnSignup" type="button">Maak account</button>
+<div class="hint" id="signupMsg"></div>
 </div>
 </div>
-</section><section class="screen" id="screenFriends">
+</div>
+<div class="btnrow" style="margin-top:14px;">
+<button class="btn ghost" id="btnAuthBack" type="button">Terug</button>
+</div>
+</div>
+</section>
+
+<section class="screen" id="screenFriends">
 <div class="card">
 <h1>Friends</h1>
-<p>Voeg vrienden toe met hun gebruikersnaam. (Voor online spelen gaan we straks rooms koppelen.)</p>
-<div class="row2">
+<p class="hint">Voeg vrienden toe met hun gebruikersnaam.</p>
+<div class="row2" style="margin-top:12px;">
 <div class="panel">
 <h2>Vriend toevoegen</h2>
 <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-<input class="chatInput" id="friendUsername" placeholder="Gebruikersnaam" style="flex:1; min-width: 220px;"/>
-<button class="btn primary" id="btnAddFriend">Toevoegen</button>
+<input class="chatInput" id="friendUsername" placeholder="Gebruikersnaam" style="flex:1; min-width:220px;"/>
+<button class="btn primary" id="btnAddFriend" type="button">Toevoegen</button>
 </div>
-<div id="friendAddMsg" style="margin-top:10px; color:rgba(219,230,255,.75); font-size:13px;"></div>
+<div class="hint" id="friendAddMsg" style="margin-top:10px;"></div>
 </div>
 <div class="panel">
 <h2>Jij</h2>
@@ -1027,8 +981,8 @@ canvas, .canvasWrap, .gameWrap {
 <div>E-mail</div><div><b id="meEmailLabel">—</b></div>
 </div>
 <div class="btnrow" style="margin-top:12px;">
-<button class="btn ghost" id="btnFriendsBack">Terug</button>
-<button class="btn" id="btnLogout">Logout</button>
+<button class="btn ghost" id="btnFriendsBack" type="button">Terug</button>
+<button class="btn" id="btnLogout" type="button">Logout</button>
 </div>
 </div>
 </div>
@@ -1040,26 +994,23 @@ canvas, .canvasWrap, .gameWrap {
 <h2>Vrienden</h2>
 <div id="friendsList" style="display:grid; gap:10px; margin-top:10px;"></div>
 </div>
-<p class="hint" style="margin-top:12px;">
-            Als je hier errors ziet, moeten we straks in Supabase tabellen + policies aanzetten.
-          </p>
 </div>
-</section></div>
+</section>
+</div>
 <div class="footer">
 <div>© Arcade Hub • server + 1 HTML</div>
 <div>Tip: <span class="kbd">P</span> pause (Game 1)</div>
 </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script>
     // -------------------------------
     // Router
     // -------------------------------
     const $ = (id) => document.getElementById(id);
 
-    // =====================================================================
-    // Supabase (Auth + Friends) — basic (GitHub Pages compatible)
-    // =====================================================================
+    // ==========================================================
+    // Supabase (Auth + Friends) v2
+    // ==========================================================
     const SUPABASE_URL = "https://sqrabbnzyvdhaffykchs.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_sKoFZmP00eQbJ7WQ91kD6w_KQlMqKP_";
 
@@ -1068,17 +1019,20 @@ canvas, .canvasWrap, .gameWrap {
       : null;
 
     const authUi = {
+      btnAuthTop: $("btnAuthTop"),
+      btnFriendsTop: $("btnFriendsTop"),
+      btnHelpTop: $("btnHelpTop"),
+      btnAuthBack: $("btnAuthBack"),
       loginEmail: $("loginEmail"),
       loginPass: $("loginPass"),
+      btnLogin: $("btnLogin"),
+      loginMsg: $("loginMsg"),
       signupUser: $("signupUser"),
       signupEmail: $("signupEmail"),
       signupPass: $("signupPass"),
-      btnLogin: $("btnLogin"),
       btnSignup: $("btnSignup"),
-      loginMsg: $("loginMsg"),
       signupMsg: $("signupMsg"),
       btnLogout: $("btnLogout"),
-      btnFriendsTop: $("btnFriendsTop"),
       btnFriendsBack: $("btnFriendsBack"),
       meUserLabel: $("meUserLabel"),
       meEmailLabel: $("meEmailLabel"),
@@ -1087,303 +1041,239 @@ canvas, .canvasWrap, .gameWrap {
       friendAddMsg: $("friendAddMsg"),
       requestsList: $("requestsList"),
       friendsList: $("friendsList"),
-      btnAuthTop: $("btnAuthTop"),
     };
 
     let sessionUser = null;
     let myProfile = null;
 
-
-    // BTN_AUTH_TOP_WIRE
-    function updateTopPill() {
-      if (!authUi.btnAuthTop) return;
-      const label = $("statusText");
-      if (label) {
-        if (sessionUser) label.textContent = myProfile?.username ? `👤 ${myProfile.username}` : "👤 Ingelogd";
-        else label.textContent = "Login";
-      }
+    function setMsg(el, msg){ if(el) el.textContent = msg || ""; }
+    function updateTopAuthBtn(){
+      if(!authUi.btnAuthTop) return;
+      authUi.btnAuthTop.textContent = sessionUser ? (myProfile && myProfile.username ? ("👤 " + myProfile.username) : "👤 Ingelogd") : "Login";
+    }
+    function updateMeLabels(){
+      if(authUi.meEmailLabel) authUi.meEmailLabel.textContent = (sessionUser && sessionUser.email) ? sessionUser.email : "—";
+      if(authUi.meUserLabel) authUi.meUserLabel.textContent = (myProfile && myProfile.username) ? myProfile.username : "—";
+      updateTopAuthBtn();
     }
 
-    async function openAuth() {
-      updateTopPill();
-      showScreen("auth");
-    }
-
-
-    function setMsg(el, text) {
-      if (!el) return;
-      el.textContent = text || "";
-    }
-
-    async function loadMyProfile() {
-      if (!sb || !sessionUser) return null;
-      const { data, error } = await sb
-        .from("profiles")
-        .select("id, username, created_at")
-        .eq("id", sessionUser.id)
-        .maybeSingle();
-      if (error) throw error;
+    async function loadMyProfile(){
+      if(!sb || !sessionUser) return null;
+      const { data, error } = await sb.from("profiles").select("id, username").eq("id", sessionUser.id).maybeSingle();
+      if(error) throw error;
       myProfile = data || null;
       return myProfile;
     }
 
-    async function upsertMyProfile(username) {
-      if (!sb || !sessionUser) throw new Error("Geen sessie");
-      const clean = String(username || "").trim();
-      if (clean.length < 3) throw new Error("Gebruikersnaam te kort (min 3)");
-      const { error } = await sb
-        .from("profiles")
-        .upsert({ id: sessionUser.id, username: clean }, { onConflict: "id" });
-      if (error) throw error;
-      await loadMyProfile();
-    }
-
-    function updateMeLabels() {
-      updateTopPill();
-      if (authUi.meEmailLabel) authUi.meEmailLabel.textContent = sessionUser?.email || "—";
-      if (authUi.meUserLabel) authUi.meUserLabel.textContent = myProfile?.username || "—";
-    }
-
-    async function ensureLoggedIn() {
-      if (!sb) {
-        // Missing script or bad load; allow playing offline
-        showScreen("home");
-        return;
-      }
-      const { data } = await sb.auth.getSession();
-      sessionUser = data?.session?.user || null;
-
-      if (!sessionUser) {
-        showScreen("auth");
-        return;
-      }
-
+    async function upsertMyProfile(username){
+      const u = String(username||"").trim();
+      if(u.length < 3) throw new Error("Gebruikersnaam te kort");
+      const { error } = await sb.from("profiles").upsert({ id: sessionUser.id, username: u }, { onConflict: "id" });
+      if(error) throw error;
       await loadMyProfile().catch(()=>null);
-      updateMeLabels();
-      updateTopPill();
     }
 
-    async function doLogin() {
+    async function ensureAuthOnLoad(){
+      try{ showScreen("home"); }catch(e){}
+      updateTopAuthBtn();
+      if(!sb) return;
+
+      const { data } = await sb.auth.getSession();
+      sessionUser = data && data.session ? data.session.user : null;
+      if(sessionUser) await loadMyProfile().catch(()=>null);
+      updateMeLabels();
+      if(!sessionUser) showScreen("auth");
+    }
+
+    async function doLogin(){
       setMsg(authUi.loginMsg, "Bezig met inloggen…");
-      try {
+      try{
         const email = authUi.loginEmail.value.trim();
         const password = authUi.loginPass.value;
         const { data, error } = await sb.auth.signInWithPassword({ email, password });
-        if (error) throw error;
+        if(error) throw error;
         sessionUser = data.user;
         await loadMyProfile().catch(()=>null);
         updateMeLabels();
-        setMsg(authUi.loginMsg, "✅ Ingelogd!");
         showScreen("home");
-      } catch (e) {
-        setMsg(authUi.loginMsg, "⚠️ " + (e?.message || e));
+        setMsg(authUi.loginMsg, "✅ Ingelogd");
+      }catch(e){
+        setMsg(authUi.loginMsg, "⚠️ " + (e && e.message ? e.message : e));
       }
     }
 
-    async function doSignup() {
+    async function doSignup(){
       setMsg(authUi.signupMsg, "Account maken…");
-      try {
+      try{
         const username = authUi.signupUser.value.trim();
         const email = authUi.signupEmail.value.trim();
         const password = authUi.signupPass.value;
+
         const { data, error } = await sb.auth.signUp({ email, password });
-        if (error) throw error;
+        if(error) throw error;
 
         sessionUser = data.user || null;
-
-        if (sessionUser) {
+        if(sessionUser){
           await upsertMyProfile(username);
           updateMeLabels();
           showScreen("home");
-          setMsg(authUi.signupMsg, "✅ Account klaar!");
-        } else {
-          setMsg(authUi.signupMsg, "✅ Account gemaakt. Check je mail als e-mail bevestiging aan staat.");
+          setMsg(authUi.signupMsg, "✅ Account klaar");
+        }else{
+          setMsg(authUi.signupMsg, "✅ Account gemaakt. Probeer nu in te loggen.");
         }
-      } catch (e) {
-        setMsg(authUi.signupMsg, "⚠️ " + (e?.message || e));
+      }catch(e){
+        setMsg(authUi.signupMsg, "⚠️ " + (e && e.message ? e.message : e));
       }
     }
 
-    async function doLogout() {
-      try { await sb.auth.signOut(); } catch {}
-      sessionUser = null;
-      myProfile = null;
+    async function doLogout(){
+      try{ await sb.auth.signOut(); }catch(e){}
+      sessionUser = null; myProfile = null;
       updateMeLabels();
       showScreen("auth");
     }
 
-    async function openFriends() {
-      if (!sessionUser) return showScreen("auth");
-      await refreshFriends().catch(()=>null);
-      showScreen("friends");
-    }
+    async function refreshFriends(){
+      if(!sb || !sessionUser) return;
+      if(authUi.requestsList) authUi.requestsList.innerHTML = "";
+      if(authUi.friendsList) authUi.friendsList.innerHTML = "";
 
-    async function refreshFriends() {
-      if (!sb || !sessionUser) return;
-      if (authUi.requestsList) authUi.requestsList.innerHTML = "";
-      if (authUi.friendsList) authUi.friendsList.innerHTML = "";
-
-      // Requests to me
       const { data: reqs, error: reqErr } = await sb
         .from("friend_requests")
         .select("id, from_id, to_id, status, created_at, from:from_id(username)")
         .eq("to_id", sessionUser.id)
         .eq("status", "pending")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending:false });
 
-      if (reqErr) {
-        if (authUi.requestsList) authUi.requestsList.innerHTML = `<div class="hint">⚠️ ${reqErr.message}</div>`;
-      } else {
-        if (authUi.requestsList && (!reqs || reqs.length===0)) authUi.requestsList.innerHTML = `<div class="hint">Geen requests.</div>`;
-        for (const r of (reqs||[])) {
-          const row = document.createElement("div");
-          row.className = "panel";
-          row.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-              <div><b>${r.from?.username || r.from_id}</b> wil vriend worden.</div>
-              <div style="display:flex; gap:8px;">
-                <button class="hudBtn" data-act="accept" data-id="${r.id}">Accepteer</button>
-                <button class="hudBtn" data-act="decline" data-id="${r.id}">Weiger</button>
-              </div>
-            </div>`;
+      if(reqErr){
+        if(authUi.requestsList) authUi.requestsList.innerHTML = "<div class='hint'>⚠️ " + reqErr.message + "</div>";
+      }else{
+        if(authUi.requestsList && (!reqs || reqs.length===0)) authUi.requestsList.innerHTML = "<div class='hint'>Geen requests.</div>";
+        (reqs||[]).forEach(r=>{
+          const row = document.createElement("div"); row.className="panel";
+          const fromName = (r.from && r.from.username) ? r.from.username : r.from_id;
+          row.innerHTML =
+            "<div style='display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;'>" +
+              "<div><b>" + fromName + "</b> wil vriend worden.</div>" +
+              "<div style='display:flex;gap:8px;'>" +
+                "<button class='hudBtn' data-act='accept' data-id='" + r.id + "' type='button'>Accepteer</button>" +
+                "<button class='hudBtn' data-act='decline' data-id='" + r.id + "' type='button'>Weiger</button>" +
+              "</div>" +
+            "</div>";
           authUi.requestsList.appendChild(row);
-        }
+        });
       }
 
-      // Friends list
       const { data: friends, error: frErr } = await sb
         .from("friends")
         .select("id, user_id, friend_id, created_at, friend:friend_id(username)")
         .eq("user_id", sessionUser.id)
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending:false });
 
-      if (frErr) {
-        if (authUi.friendsList) authUi.friendsList.innerHTML = `<div class="hint">⚠️ ${frErr.message}</div>`;
-      } else {
-        if (authUi.friendsList && (!friends || friends.length===0)) authUi.friendsList.innerHTML = `<div class="hint">Nog geen vrienden.</div>`;
-        for (const f of (friends||[])) {
-          const row = document.createElement("div");
-          row.className = "panel";
-          row.innerHTML = `
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
-              <div>👤 <b>${f.friend?.username || f.friend_id}</b></div>
-              <div style="display:flex; gap:8px;">
-                <button class="hudBtn" data-act="invite" data-uid="${f.friend_id}">Invite</button>
-              </div>
-            </div>`;
+      if(frErr){
+        if(authUi.friendsList) authUi.friendsList.innerHTML = "<div class='hint'>⚠️ " + frErr.message + "</div>";
+      }else{
+        if(authUi.friendsList && (!friends || friends.length===0)) authUi.friendsList.innerHTML = "<div class='hint'>Nog geen vrienden.</div>";
+        (friends||[]).forEach(f=>{
+          const row = document.createElement("div"); row.className="panel";
+          const uname = (f.friend && f.friend.username) ? f.friend.username : f.friend_id;
+          row.innerHTML = "<div>👤 <b>" + uname + "</b></div>";
           authUi.friendsList.appendChild(row);
-        }
+        });
       }
     }
 
-    async function addFriendByUsername() {
+    async function openFriends(){
+      if(!sessionUser) return showScreen("auth");
+      await refreshFriends().catch(()=>null);
+      showScreen("friends");
+    }
+
+    async function addFriendByUsername(){
       setMsg(authUi.friendAddMsg, "Zoeken…");
-      try {
+      try{
         const uname = authUi.friendUsername.value.trim();
-        if (uname.length < 3) throw new Error("Gebruikersnaam te kort");
-        if (!sb || !sessionUser) throw new Error("Niet ingelogd");
+        if(uname.length < 3) throw new Error("Gebruikersnaam te kort");
 
-        const { data: prof, error: pErr } = await sb
-          .from("profiles")
-          .select("id, username")
-          .eq("username", uname)
-          .maybeSingle();
-        if (pErr) throw pErr;
-        if (!prof) throw new Error("Gebruiker niet gevonden");
-        if (prof.id === sessionUser.id) throw new Error("Dat ben jij 😄");
+        const { data: prof, error: pErr } = await sb.from("profiles").select("id, username").eq("username", uname).maybeSingle();
+        if(pErr) throw pErr;
+        if(!prof) throw new Error("Gebruiker niet gevonden");
+        if(prof.id === sessionUser.id) throw new Error("Dat ben jij 😄");
 
-        const { error } = await sb
-          .from("friend_requests")
-          .insert({ from_id: sessionUser.id, to_id: prof.id, status: "pending" });
-        if (error) throw error;
+        const { error } = await sb.from("friend_requests").insert({ from_id: sessionUser.id, to_id: prof.id, status:"pending" });
+        if(error) throw error;
 
         setMsg(authUi.friendAddMsg, "✅ Request verstuurd!");
         authUi.friendUsername.value = "";
-        await refreshFriends().catch(()=>null);
-      } catch (e) {
-        setMsg(authUi.friendAddMsg, "⚠️ " + (e?.message || e));
+        await refreshFriends();
+      }catch(e){
+        setMsg(authUi.friendAddMsg, "⚠️ " + (e && e.message ? e.message : e));
       }
     }
 
-    async function handleRequestsClick(e) {
-      const btn = e.target.closest("button[data-act]");
-      if (!btn) return;
+    async function handleRequestsClick(ev){
+      const btn = ev.target.closest("button[data-act]");
+      if(!btn) return;
       const act = btn.getAttribute("data-act");
       const id = btn.getAttribute("data-id");
-      if (!id) return;
+      try{
+        if(act === "accept"){
+          const { data: req, error: rErr } = await sb.from("friend_requests").select("id, from_id, to_id").eq("id", id).maybeSingle();
+          if(rErr) throw rErr;
+          if(!req) throw new Error("Request niet gevonden");
 
-      try {
-        if (act === "accept") {
-          const { data: req, error: rErr } = await sb
-            .from("friend_requests")
-            .select("id, from_id, to_id, status")
-            .eq("id", id)
-            .maybeSingle();
-          if (rErr) throw rErr;
-          if (!req) throw new Error("Request niet gevonden");
-
-          const { error: uErr } = await sb
-            .from("friend_requests")
-            .update({ status: "accepted" })
-            .eq("id", id);
-          if (uErr) throw uErr;
+          const { error: uErr } = await sb.from("friend_requests").update({ status:"accepted" }).eq("id", id);
+          if(uErr) throw uErr;
 
           const { error: fErr } = await sb.from("friends").insert([
             { user_id: req.to_id, friend_id: req.from_id },
-            { user_id: req.from_id, friend_id: req.to_id },
+            { user_id: req.from_id, friend_id: req.to_id }
           ]);
-          if (fErr) throw fErr;
-        } else if (act === "decline") {
-          const { error } = await sb
-            .from("friend_requests")
-            .update({ status: "declined" })
-            .eq("id", id);
-          if (error) throw error;
+          if(fErr) throw fErr;
+        }else if(act === "decline"){
+          const { error } = await sb.from("friend_requests").update({ status:"declined" }).eq("id", id);
+          if(error) throw error;
         }
         await refreshFriends();
-      } catch (e2) {
-        alert("Fout: " + (e2?.message || e2));
+      }catch(e){
+        console.error(e);
+        alert("Fout: " + (e && e.message ? e.message : e));
       }
     }
 
-    // Hook up events
-    // DELEGATED_FRIENDS_CLICK (extra safety)
-    document.addEventListener("click", (ev) => {
-      const t = ev.target;
-      if (!t) return;
-      if (t.closest && t.closest("#btnFriendsTop")) {
-        ev.preventDefault();
-        try { openFriends(); } catch (e) { console.error(e); }
-      }
-      if (t.closest && t.closest("#btnHelpTop")) {
-        // help is allowed only when logged in; openHelp handles gating
-        ev.preventDefault();
-        try { openHelp(); } catch (e) { console.error(e); }
-      }
-    }, true);
+    function wireAuthUi(){
+      // Top buttons
+      authUi.btnAuthTop && (authUi.btnAuthTop.onclick = ()=>showScreen("auth"));
+      authUi.btnFriendsTop && (authUi.btnFriendsTop.onclick = openFriends);
 
-    if (authUi.btnLogin) authUi.btnLogin.onclick = doLogin;
-    if (authUi.btnSignup) authUi.btnSignup.onclick = doSignup;
-    if (authUi.btnLogout) authUi.btnLogout.onclick = doLogout;
-    if (authUi.btnFriendsTop) authUi.btnFriendsTop.onclick = openFriends;
-    if (authUi.btnAuthTop) authUi.btnAuthTop.onclick = openAuth;
-    if (authUi.btnFriendsBack) authUi.btnFriendsBack.onclick = () => showScreen("home");
-    if (authUi.btnAddFriend) authUi.btnAddFriend.onclick = addFriendByUsername;
-    if (authUi.requestsList) authUi.requestsList.addEventListener("click", handleRequestsClick);
+      // Auth
+      authUi.btnLogin && (authUi.btnLogin.onclick = doLogin);
+      authUi.btnSignup && (authUi.btnSignup.onclick = doSignup);
+      authUi.btnAuthBack && (authUi.btnAuthBack.onclick = ()=>showScreen("home"));
 
-    if (sb) {
-      sb.auth.onAuthStateChange(async (_event, sess) => {
-        sessionUser = sess?.user || null;
-        if (!sessionUser) {
-          myProfile = null;
-          updateMeLabels();
-          showScreen("auth");
-          return;
-        }
-        await loadMyProfile().catch(()=>null);
+      // Friends
+      authUi.btnLogout && (authUi.btnLogout.onclick = doLogout);
+      authUi.btnFriendsBack && (authUi.btnFriendsBack.onclick = ()=>showScreen("home"));
+      authUi.btnAddFriend && (authUi.btnAddFriend.onclick = addFriendByUsername);
+      authUi.requestsList && authUi.requestsList.addEventListener("click", handleRequestsClick);
+
+      updateTopAuthBtn();
+    }
+
+    if(sb){
+      sb.auth.onAuthStateChange(async (_evt, sess)=>{
+        sessionUser = sess && sess.user ? sess.user : null;
+        if(sessionUser) await loadMyProfile().catch(()=>null);
+        else myProfile = null;
         updateMeLabels();
       });
     }
+
+    window.addEventListener("DOMContentLoaded", ()=>{
+      wireAuthUi();
+      ensureAuthOnLoad().catch(console.error);
+    });
+
 
     const screens = {
       home: $("screenHome"),
@@ -1393,51 +1283,33 @@ canvas, .canvasWrap, .gameWrap {
       game1: $("screenGame1"),
       game2: $("screenGame2"),
       game3: $("screenGame3"),
-   
       auth: $("screenAuth"),
       friends: $("screenFriends"),
     };
 
-    // Ensure a visible default screen even if something else fails
-    document.addEventListener("DOMContentLoaded", () => {
-      try { showScreen("home"); } catch(e) { console.error(e); }
-    });
-
     const statusText = $("statusText");
     let lastNonHelpScreen = "home";
 
-        function showScreen(name){
-      // SAFE router: never end up with zero active screens
-      const desired = (typeof name === "string" && name.trim()) ? name.trim() : "home";
-      const target = screens[desired] || screens["home"];
+    function showScreen(name){
+      const desired = (typeof name === "string" && name in screens) ? name : "home";
+      for (const k in screens) { if (screens[k]) screens[k].classList.remove("active"); }
+      const target = screens[desired] || screens.home;
+      if (target) target.classList.add("active");
+      if (desired !== "help") lastNonHelpScreen = desired;
 
-      // If for some reason target is missing, do nothing
-      if (!target) return;
-
-      // Hide all screens first
-      Object.values(screens).forEach(el => { if (el) el.classList.remove("active"); });
-
-      // Activate
-      target.classList.add("active");
-      currentScreen = desired in screens ? desired : "home";
-      if (currentScreen !== "help") lastNonHelpScreen = currentScreen;
-
-      // Update status text (optional)
-      if (statusText) {
-        statusText.textContent =
-          currentScreen === "home" ? "Start" :
-          currentScreen === "select" ? "Kies een game" :
-          currentScreen === "g1" ? "Neon Dodger" :
-          currentScreen === "g2" ? "TicTacToe" :
-          currentScreen === "g3" ? "Dammen" :
-          currentScreen === "help" ? "Arcade AI" :
-          currentScreen === "auth" ? "Login" :
-          currentScreen === "friends" ? "Friends" :
-          "Arcade Hub";
-      }
+      statusText.textContent =
+        desired === "home" ? "Start klaar" :
+        desired === "how" ? "Uitleg" :
+        desired === "select" ? "Game select" :
+        desired === "help" ? "Arcade AI" :
+        desired === "auth" ? "Login" :
+        desired === "friends" ? "Friends" :
+        desired === "game1" ? "Playing: Neon Dodger" :
+        desired === "game2" ? "Playing: TicTacToe" :
+        desired === "game3" ? "Playing: Dammen" : "—";
+    }
 
     function openHelp(prefill){
-      if (typeof sessionUser !== "undefined" && !sessionUser) { showScreen("auth"); return; }
       showScreen("help");
       if (prefill) {
         aiSendUser(prefill);
@@ -1446,7 +1318,7 @@ canvas, .canvasWrap, .gameWrap {
       }
     }
 
-    $("btnPlay").onclick = () => { if (typeof sessionUser !== "undefined" && !sessionUser) return showScreen("auth"); showScreen("select"); };
+    $("btnPlay").onclick = () => showScreen("select");
     $("btnHow").onclick = () => showScreen("how");
     $("btnHowContinue").onclick = () => showScreen("select");
     $("btnHowBack").onclick = () => showScreen("home");
@@ -1594,7 +1466,7 @@ canvas, .canvasWrap, .gameWrap {
       }
     });
 
-    aiBackBtn.onclick = () => showScreen("home");
+    aiBackBtn.onclick = () => showScreen(lastNonHelpScreen || "home");
     aiClearBtn.onclick = () => {
       aiState.messages = [];
       aiRender();
@@ -1610,9 +1482,6 @@ canvas, .canvasWrap, .gameWrap {
 
     // greeting
     aiPush("assistant", "Hey! Ik ben Arcade AI 👾\nVraag me alles over de games, regels, strategie, of bugs.");
-
-    // Supabase auth gate
-    ensureLoggedIn();
 
     // =====================================================================
     // Game 1: Neon Dodger
@@ -2818,9 +2687,9 @@ canvas, .canvasWrap, .gameWrap {
     // =====================================================================
     // Button wiring (start games)
     // =====================================================================
-    $("btnStartGame1").onclick = () => { if (typeof sessionUser !== "undefined" && !sessionUser) return showScreen("auth"); g1Start(); };
-    $("btnStartGame2").onclick = () => { if (typeof sessionUser !== "undefined" && !sessionUser) return showScreen("auth"); tttStart(); };
-    $("btnStartGame3").onclick = () => { if (typeof sessionUser !== "undefined" && !sessionUser) return showScreen("auth"); chkStart(); };
+    $("btnStartGame1").onclick = () => g1Start();
+    $("btnStartGame2").onclick = () => tttStart();
+    $("btnStartGame3").onclick = () => chkStart();
 
     // init checkers
     chkNewGame();
