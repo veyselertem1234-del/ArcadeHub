@@ -610,6 +610,15 @@ input, textarea, button{ font-size:16px; }
 }
 /* Decorative layers never block clicks */
 .bg, .noise, .card:before, .gameCard:before { pointer-events:none !important; }
+
+
+/* Neon Dodger Online UI */
+.ndOnline .chatInput{ background:rgba(5,8,22,.65); border:1px solid rgba(255,255,255,.10); color:rgba(219,230,255,.95); border-radius:12px; padding:0 12px; }
+.ndOnline .hudBtn[disabled]{ opacity:.45; cursor:not-allowed; }
+@media (max-width: 600px){
+  .ndOnline #ndNetMsg{ display:none; }
+  .ndOnline input#ndJoinCode{ width:92px; }
+}
 </style>
 </head>
 <body>
@@ -788,6 +797,25 @@ input, textarea, button{ font-size:16px; }
 <div class="hudBox">
 <div>Score: <b id="scoreEl">0</b> • Best: <b id="bestEl">0</b></div>
 <div style="margin-top:4px;">Level: <b id="levelEl">1</b> • Tijd: <b id="timeEl">0.0</b>s</div>
+
+<div class="ndOnline" style="margin-top:10px; padding-top:8px; border-top:1px solid rgba(255,255,255,.08);">
+<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+<div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+<span class="tag" style="padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(10,14,30,.55);">
+        Online: <b id="ndRoomLabel">Solo</b>
+</span>
+<span class="hint" id="ndNetMsg" style="margin:0;">Maak of join een room om samen te spelen.</span>
+</div>
+<div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+<button class="hudBtn" id="btnNdCreate" type="button">Create Room</button>
+<div style="display:flex; gap:8px; align-items:center;">
+<input class="chatInput" id="ndJoinCode" maxlength="12" placeholder="CODE" style="height:38px; width:110px; text-transform:uppercase; letter-spacing:2px; text-align:center;"/>
+<button class="hudBtn" id="btnNdJoin" type="button">Join</button>
+</div>
+<button class="hudBtn" disabled="" id="btnNdLeave" type="button">Leave</button>
+</div>
+</div>
+</div>
 </div>
 <div class="hudBtns">
 <button class="hudBtn" id="btnPause">Pause (P)</button>
@@ -927,7 +955,6 @@ input, textarea, button{ font-size:16px; }
 </div>
 </div>
 </section>
-
 <section class="screen" id="screenAuth">
 <div class="card" style="width:min(560px,96vw);">
 <h1>Inloggen</h1>
@@ -960,7 +987,6 @@ input, textarea, button{ font-size:16px; }
 </div>
 </div>
 </section>
-
 <section class="screen" id="screenFriends">
 <div class="card">
 <h1>Friends</h1>
@@ -1489,6 +1515,176 @@ input, textarea, button{ font-size:16px; }
     const canvas = $("gameCanvas");
     const ctx = canvas.getContext("2d", { alpha: false });
 
+
+    // ----------------------------------------------------------
+    // Neon Dodger Online (Rooms + Realtime) — simplest co-op
+    // ----------------------------------------------------------
+    const ndUi = {
+      roomLabel: $("ndRoomLabel"),
+      netMsg: $("ndNetMsg"),
+      btnCreate: $("btnNdCreate"),
+      joinCode: $("ndJoinCode"),
+      btnJoin: $("btnNdJoin"),
+      btnLeave: $("btnNdLeave"),
+    };
+
+    const nd = {
+      roomCode: null,
+      role: "solo", // solo | host | guest
+      channel: null,
+      players: new Map(), // user_id -> {x,y,alive,updated_at}
+      lastSendMs: 0,
+      otherId: null,
+    };
+
+    function ndMsg(t){ if (ndUi.netMsg) ndUi.netMsg.textContent = t || ""; }
+    function ndSetLabel(){
+      if (!ndUi.roomLabel) return;
+      if (!nd.roomCode) ndUi.roomLabel.textContent = "Solo";
+      else ndUi.roomLabel.textContent = (nd.role === "host" ? "Host " : "Guest ") + "• " + nd.roomCode;
+      if (ndUi.btnLeave) ndUi.btnLeave.disabled = !nd.roomCode;
+      if (ndUi.btnCreate) ndUi.btnCreate.disabled = !!nd.roomCode;
+      if (ndUi.btnJoin) ndUi.btnJoin.disabled = !!nd.roomCode;
+      if (ndUi.joinCode) ndUi.joinCode.disabled = !!nd.roomCode;
+    }
+
+    function ndGenCode(){
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      const bytes = new Uint8Array(6);
+      (crypto && crypto.getRandomValues) ? crypto.getRandomValues(bytes) : bytes.forEach((_,i)=>bytes[i]=Math.floor(Math.random()*256));
+      let out = "";
+      for (let i=0;i<6;i++) out += chars[bytes[i] % chars.length];
+      return out;
+    }
+
+    async function ndSubscribe(){
+      if (!sb || !nd.roomCode) return;
+      if (nd.channel){ try{ await sb.removeChannel(nd.channel); }catch(e){} nd.channel=null; }
+
+      nd.players.clear();
+      nd.otherId = null;
+
+      nd.channel = sb.channel("nd_room_" + nd.roomCode)
+        .on("postgres_changes", {
+          event: "*",
+          schema: "public",
+          table: "nd_state",
+          filter: "room_code=eq." + nd.roomCode
+        }, (payload) => {
+          const row = payload.new || payload.old;
+          if (!row) return;
+          nd.players.set(row.user_id, row);
+          // Pick "other" as first user that isn't me
+          if (sessionUser){
+            for (const [uid, st] of nd.players){
+              if (uid !== sessionUser.id){ nd.otherId = uid; break; }
+            }
+          }
+        })
+        .subscribe();
+    }
+
+    async function ndUpsertMyState(force=false){
+      if (!sb || !sessionUser || !nd.roomCode) return;
+      const now = performance.now();
+      if (!force && (now - nd.lastSendMs) < 90) return; // ~11 updates/sec
+      nd.lastSendMs = now;
+
+      const payload = {
+        room_code: nd.roomCode,
+        user_id: sessionUser.id,
+        x: player.x,
+        y: player.y,
+        alive: !g1.over
+      };
+      const { error } = await sb.from("nd_state").upsert(payload, { onConflict: "room_code,user_id" });
+      if (error) throw error;
+    }
+
+    async function ndCreateRoom(){
+      if (!sb || !sessionUser) return showScreen("auth");
+      ndMsg("Room maken…");
+      try{
+        let code = null;
+        for (let i=0;i<6;i++){
+          const c = ndGenCode();
+          const { error } = await sb.from("nd_rooms").insert({ code: c, host_id: sessionUser.id });
+          if (!error){ code = c; break; }
+        }
+        if (!code) throw new Error("Kon geen room code maken. Probeer opnieuw.");
+        nd.roomCode = code;
+        nd.role = "host";
+        ndSetLabel();
+        await ndSubscribe();
+        await ndUpsertMyState(true);
+        ndMsg("✅ Room gemaakt. Deel code: " + code);
+      }catch(e){
+        console.error(e);
+        ndMsg("⚠️ " + (e?.message || e));
+      }
+    }
+
+    async function ndJoinRoom(){
+      if (!sb || !sessionUser) return showScreen("auth");
+      const code = String(ndUi.joinCode?.value || "").trim().toUpperCase();
+      if (!code) return ndMsg("Vul een code in.");
+      ndMsg("Joinen…");
+      try{
+        // Try to claim guest slot
+        const { data, error } = await sb
+          .from("nd_rooms")
+          .update({ guest_id: sessionUser.id })
+          .eq("code", code)
+          .is("guest_id", null)
+          .select("code, host_id, guest_id, created_at")
+          .maybeSingle();
+
+        if (error) throw error;
+        if (!data) throw new Error("Room niet gevonden of al vol (of policy blokkeert join).");
+
+        nd.roomCode = data.code;
+        nd.role = "guest";
+        ndSetLabel();
+        await ndSubscribe();
+        await ndUpsertMyState(true);
+        ndMsg("✅ Joined room " + nd.roomCode);
+      }catch(e){
+        console.error(e);
+        ndMsg("⚠️ " + (e?.message || e));
+      }
+    }
+
+    async function ndLeaveRoom(){
+      if (!sb || !sessionUser || !nd.roomCode) return;
+      const code = nd.roomCode;
+      ndMsg("Leaving…");
+      try{
+        // remove my state row
+        await sb.from("nd_state").delete().match({ room_code: code, user_id: sessionUser.id });
+
+        if (nd.role === "host"){
+          // delete room (cascades nd_state)
+          await sb.from("nd_rooms").delete().eq("code", code);
+        } else {
+          // clear guest slot
+          await sb.from("nd_rooms").update({ guest_id: null }).eq("code", code).eq("guest_id", sessionUser.id);
+        }
+      }catch(e){
+        console.error(e);
+      } finally {
+        if (nd.channel){ try{ await sb.removeChannel(nd.channel); }catch(e){} nd.channel=null; }
+        nd.roomCode = null; nd.role = "solo"; nd.players.clear(); nd.otherId=null;
+        ndSetLabel();
+        ndMsg("Je bent weer solo.");
+      }
+    }
+
+    function ndGetOther(){
+      if (!sessionUser || !nd.otherId) return null;
+      return nd.players.get(nd.otherId) || null;
+    }
+
+
     const scoreEl = $("scoreEl");
     const bestEl = $("bestEl");
     const levelEl = $("levelEl");
@@ -1684,6 +1880,9 @@ input, textarea, button{ font-size:16px; }
       player.x = clamp(player.x, player.r+10, r.width - player.r-10);
       player.y = clamp(player.y, player.r+10, r.height - player.r-10);
 
+      // Online sync (send my position)
+      if (nd.roomCode) { ndUpsertMyState().catch(()=>{}); }
+
       for (let i = hazards.length-1; i>=0; i--){
         const hzd = hazards[i];
         hzd.y += hzd.vy * dt;
@@ -1813,6 +2012,24 @@ input, textarea, button{ font-size:16px; }
       ctx.arc(player.x, player.y, player.r, 0, Math.PI*2);
       ctx.fill();
 
+      // Draw other player (online)
+      const other = ndGetOther();
+      if (other){
+        const ox = other.x, oy = other.y;
+        const og = ctx.createRadialGradient(ox, oy, 0, ox, oy, player.r*2.6);
+        og.addColorStop(0, "rgba(255,198,66,0.95)");
+        og.addColorStop(0.5, "rgba(255,120,210,0.25)");
+        og.addColorStop(1, "rgba(255,120,210,0)");
+        ctx.fillStyle = og;
+        ctx.beginPath();
+        ctx.arc(ox, oy, player.r*2.6, 0, Math.PI*2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(255,240,220,0.96)";
+        ctx.beginPath();
+        ctx.arc(ox, oy, player.r, 0, Math.PI*2);
+        ctx.fill();
+      }
+
       ctx.fillStyle = "rgba(7,8,18,0.65)";
       ctx.beginPath();
       ctx.arc(player.x, player.y, Math.max(3, player.r*0.18), 0, Math.PI*2);
@@ -1880,7 +2097,18 @@ input, textarea, button{ font-size:16px; }
       requestAnimationFrame(g1Loop);
     }
 
-    const g1Observer = new MutationObserver(() => {
+    
+
+    // Wire Neon Dodger online buttons
+    if (ndUi.btnCreate) ndUi.btnCreate.onclick = ndCreateRoom;
+    if (ndUi.btnJoin) ndUi.btnJoin.onclick = ndJoinRoom;
+    if (ndUi.btnLeave) ndUi.btnLeave.onclick = ndLeaveRoom;
+    if (ndUi.joinCode){
+      ndUi.joinCode.addEventListener("keydown", (e)=>{ if (e.key === "Enter") ndJoinRoom(); });
+      ndUi.joinCode.addEventListener("input", ()=>{ ndUi.joinCode.value = ndUi.joinCode.value.toUpperCase().replace(/[^A-Z0-9]/g,""); });
+    }
+    ndSetLabel();
+const g1Observer = new MutationObserver(() => {
       if (screens.game1.classList.contains("active")) resizeCanvas();
     });
     g1Observer.observe(screens.game1, { attributes:true, attributeFilter:["class"] });
