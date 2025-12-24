@@ -657,6 +657,10 @@ canvas, .canvasWrap, .gameWrap {
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+
+/* TOPBAR_CLICKABLE */
+.topbar{position:relative; z-index:10; pointer-events:auto;}
+.topbar *{pointer-events:auto;}
 </style>
 </head>
 <body class="safe">
@@ -672,8 +676,8 @@ canvas, .canvasWrap, .gameWrap {
 </div>
 </div>
 <div style="display:flex; gap:10px; align-items:center;">
-<button class="btn ghost" id="btnFriendsTop" style="padding:8px 12px; border-radius:999px;">Friends</button>
-<button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;">Hulp</button>
+<button class="btn ghost" id="btnFriendsTop" style="padding:8px 12px; border-radius:999px;" type="button">Friends</button>
+<button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;" type="button">Hulp</button>
 <div class="pill">
 <span aria-hidden="true" class="dot"></span>
 <span id="statusText">Start klaar</span>
@@ -1326,6 +1330,21 @@ canvas, .canvasWrap, .gameWrap {
     }
 
     // Hook up events
+    // DELEGATED_FRIENDS_CLICK (extra safety)
+    document.addEventListener("click", (ev) => {
+      const t = ev.target;
+      if (!t) return;
+      if (t.closest && t.closest("#btnFriendsTop")) {
+        ev.preventDefault();
+        try { openFriends(); } catch (e) { console.error(e); }
+      }
+      if (t.closest && t.closest("#btnHelpTop")) {
+        // help is allowed only when logged in; openHelp handles gating
+        ev.preventDefault();
+        try { openHelp(); } catch (e) { console.error(e); }
+      }
+    });
+
     if (authUi.btnLogin) authUi.btnLogin.onclick = doLogin;
     if (authUi.btnSignup) authUi.btnSignup.onclick = doSignup;
     if (authUi.btnLogout) authUi.btnLogout.onclick = doLogout;
