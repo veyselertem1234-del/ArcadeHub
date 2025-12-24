@@ -203,7 +203,7 @@
       background: radial-gradient(400px 180px at 20% 0%, rgba(109,240,255,.20), transparent 60%),
                   radial-gradient(420px 220px at 90% 40%, rgba(184,107,255,.18), transparent 65%);
       transform: rotate(6deg);
-      pointer-events:auto;
+      pointer-events:none;
     }
     .gameCard > *{ position:relative; }
     .gameTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
@@ -676,12 +676,9 @@ canvas, .canvasWrap, .gameWrap {
 </div>
 </div>
 <div style="display:flex; gap:10px; align-items:center;">
-<button class="btn ghost" id="btnFriendsTop" style="padding:8px 12px; border-radius:999px;" type="button">Friends</button>
-<button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;" type="button">Hulp</button>
-<div class="pill">
-<span aria-hidden="true" class="dot"></span>
-<span id="statusText">Start klaar</span>
-</div>
+<button class="btn ghost" id="btnFriendsTop" style="padding:8px 12px; border-radius:999px;" type="button" onclick="try{openFriends();}catch(e){console.error(e);}">>Friends</button>
+<button class="btn ghost" id="btnHelpTop" style="padding:8px 12px; border-radius:999px;" type="button" onclick="try{openHelp();}catch(e){console.error(e);}">>Hulp</button>
+<button class="pill" id="btnAuthTop" type="button" style="cursor:pointer;"><span aria-hidden="true" class="dot"></span><span id="statusText">Start klaar</span></button>
 </div>
 </div>
 <div class="stage" id="stage">
@@ -1090,10 +1087,28 @@ canvas, .canvasWrap, .gameWrap {
       friendAddMsg: $("friendAddMsg"),
       requestsList: $("requestsList"),
       friendsList: $("friendsList"),
+      btnAuthTop: $("btnAuthTop"),
     };
 
     let sessionUser = null;
     let myProfile = null;
+
+
+    // BTN_AUTH_TOP_WIRE
+    function updateTopPill() {
+      if (!authUi.btnAuthTop) return;
+      const label = $("statusText");
+      if (label) {
+        if (sessionUser) label.textContent = myProfile?.username ? `👤 ${myProfile.username}` : "👤 Ingelogd";
+        else label.textContent = "Login";
+      }
+    }
+
+    async function openAuth() {
+      updateTopPill();
+      showScreen("auth");
+    }
+
 
     function setMsg(el, text) {
       if (!el) return;
@@ -1124,6 +1139,7 @@ canvas, .canvasWrap, .gameWrap {
     }
 
     function updateMeLabels() {
+      updateTopPill();
       if (authUi.meEmailLabel) authUi.meEmailLabel.textContent = sessionUser?.email || "—";
       if (authUi.meUserLabel) authUi.meUserLabel.textContent = myProfile?.username || "—";
     }
@@ -1144,6 +1160,7 @@ canvas, .canvasWrap, .gameWrap {
 
       await loadMyProfile().catch(()=>null);
       updateMeLabels();
+      updateTopPill();
     }
 
     async function doLogin() {
@@ -1343,12 +1360,13 @@ canvas, .canvasWrap, .gameWrap {
         ev.preventDefault();
         try { openHelp(); } catch (e) { console.error(e); }
       }
-    });
+    }, true);
 
     if (authUi.btnLogin) authUi.btnLogin.onclick = doLogin;
     if (authUi.btnSignup) authUi.btnSignup.onclick = doSignup;
     if (authUi.btnLogout) authUi.btnLogout.onclick = doLogout;
     if (authUi.btnFriendsTop) authUi.btnFriendsTop.onclick = openFriends;
+    if (authUi.btnAuthTop) authUi.btnAuthTop.onclick = openAuth;
     if (authUi.btnFriendsBack) authUi.btnFriendsBack.onclick = () => showScreen("home");
     if (authUi.btnAddFriend) authUi.btnAddFriend.onclick = addFriendByUsername;
     if (authUi.requestsList) authUi.requestsList.addEventListener("click", handleRequestsClick);
